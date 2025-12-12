@@ -1,12 +1,9 @@
 <?php
-require_once 'database.php';
 require_once __DIR__ . '/database.php';
-
 
 // Database instance
 $db = Database::getInstance();
 
-// Set current season
 $currSeason = 'ziema';
 
 // ----- Featured Rooms: 3 random hotels -----
@@ -18,7 +15,6 @@ $featuredHotels = array_slice($featuredHotels, 0, 3);
 $seasonalDeals = $db->select('viesbutis', ['sezonas' => array_search($currSeason, ['vasara'=>1,'ruduo'=>2,'ziema'=>3,'pavasaris'=>4])+1]);
 
 // ----- Recommended Hotels: based on previously viewed tags -----
-// For simplicity, let's assume previously viewed hotel IDs are stored in session
 session_start();
 $viewedHotels = $_SESSION['viewed_hotels'] ?? []; // e.g., [1,3]
 $recommendedHotels = [];
@@ -54,275 +50,161 @@ if(!empty($viewedHotels)) {
     <link rel="stylesheet" href="CSSStyles/style.css">
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <script src="https://unpkg.com/feather-icons"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <div class="logo">
-                <h1>Nomado</h1>
-                <p>Where comfort meets luxury</p>
-            </div>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="Home.html">Home</a></li>
-                    <li><a href="deals.html">Deals</a></li>
-                    <li><a href="About_Us.html">About us</a></li>
-                </ul>
-            </nav>
-            <div class="auth-buttons">
-                <a href="Login.html" class="btn btn-primary">Sign Up</a>
-            </div>
+<header class="header">
+    <div class="container">
+        <div class="logo">
+            <h1>Nomado</h1>
+            <p>Where comfort meets luxury</p>
         </div>
-    </header>
-
-    <main>
-        <section class="hero">
-            <div class="hero-content">
-                <h2>Find Your Perfect Stay</h2>
-                <p>Discover luxury accommodations tailored to your needs</p>
-                
-                <div class="search-box">
-                    <div class="search-field">
-                        <i data-feather="map-pin"></i>
-                        <input type="text" placeholder="Destination">
-                    </div>
-                    <div class="search-field">
-                        <i data-feather="calendar"></i>
-                        <input type="text" placeholder="Check-in">
-                    </div>
-                    <div class="search-field">
-                        <i data-feather="calendar"></i>
-                        <input type="text" placeholder="Check-out">
-                    </div>
-                    <div class="search-field">
-                        <i data-feather="users"></i>
-                        <input type="text" placeholder="Guests">
-                    </div>
-                    <button class="btn btn-primary btn-search">
-                        <i data-feather="search"></i> Search
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Featured Rooms -->
-        <section class="featured-rooms">
-            <div class="container">
-                <h2 class="section-title">Featured Rooms</h2>
-                <div class="rooms-grid">
-                    <?php foreach($featuredHotels as $hotel): ?>
-                        <div class="room-card">
-                            <div class="room-image" style="background-image: url('../Images/<?php echo $hotel['pavadinimas']; ?>.jpg');"></div>
-                            <div class="room-details">
-                                <h3><?php echo $hotel['pavadinimas']; ?></h3>
-                                <div class="room-features">
-                                    <span><i data-feather="users"></i> 2 Guests</span>
-                                    <span><i data-feather="maximize-2"></i> <?php echo $hotel['kambariu_skaicius']*20; ?>m²</span>
-                                    <span><i data-feather="wifi"></i> Free WiFi</span>
-                                </div>
-                                <div class="room-price">
-                                    <span class="price">$<?php echo $hotel['kaina']; ?></span>
-                                    <span class="per-night">/ night</span>
-                                </div>
-                                <button onclick="window.location.href='Hotel_Details.php?id=<?php echo $hotel['id']; ?>'" class="btn btn-outline">View Details</button>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        </section>
-
-        <!-- Seasonal Deals -->
-        <section class="featured-rooms">
-            <div class="container">
-                <h2 class="section-title">Seasonal Deals</h2>
-                <div class="rooms-grid">
-                    <?php foreach($seasonalDeals as $hotel): ?>
-                        <div class="room-card">
-                            <div class="room-image" style="background-image: url('../Images/<?php echo $hotel['pavadinimas']; ?>.jpg');"></div>
-                            <div class="room-details">
-                                <h3><?php echo $hotel['pavadinimas']; ?></h3>
-                                <div class="room-features">
-                                    <span><i data-feather="users"></i> 2 Guests</span>
-                                    <span><i data-feather="maximize-2"></i> <?php echo $hotel['kambariu_skaicius']*20; ?>m²</span>
-                                    <span><i data-feather="wifi"></i> Free WiFi</span>
-                                </div>
-                                <div class="room-price">
-                                    <span class="price">$<?php echo $hotel['kaina']; ?></span>
-                                    <span class="per-night">/ night</span>
-                                </div>
-                                <button onclick="window.location.href='Hotel_Details.php?id=<?php echo $hotel['id']; ?>'" class="btn btn-outline">View Details</button>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        </section>
-
-        <!-- Recommended Hotels -->
-        <?php if(!empty($recommendedHotels)): ?>
-        <section class="featured-rooms">
-            <div class="container">
-                <h2 class="section-title">Recommended for You</h2>
-                <div class="rooms-grid">
-                    <?php foreach($recommendedHotels as $hotel): ?>
-                        <div class="room-card">
-                            <div class="room-image" style="background-image: url('../Images/<?php echo $hotel['pavadinimas']; ?>.jpg');"></div>
-                            <div class="room-details">
-                                <h3><?php echo $hotel['pavadinimas']; ?></h3>
-                                <div class="room-features">
-                                    <span><i data-feather="users"></i> 2 Guests</span>
-                                    <span><i data-feather="maximize-2"></i> <?php echo $hotel['kambariu_skaicius']*20; ?>m²</span>
-                                    <span><i data-feather="wifi"></i> Free WiFi</span>
-                                </div>
-                                <div class="room-price">
-                                    <span class="price">$<?php echo $hotel['kaina']; ?></span>
-                                    <span class="per-night">/ night</span>
-                                </div>
-                                <button onclick="window.location.href='Hotel_Details.php?id=<?php echo $hotel['id']; ?>'" class="btn btn-outline">View Details</button>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        </section>
-        <?php endif; ?>
-
-        <section class="hotel-categories">
-        <section class="amenities">
-            <div class="container">
-                <h2 class="section-title">Our Amenities</h2>
-                <div class="amenities-grid">
-                    <div class="amenity-card">
-                        <div class="amenity-icon">
-                            <i data-feather="wifi"></i>
-                        </div>
-                        <h3>Free WiFi</h3>
-                        <p>High-speed internet access throughout the property</p>
-                    </div>
-                    
-                    <div class="amenity-card">
-                        <div class="amenity-icon">
-                            <i data-feather="coffee"></i>
-                        </div>
-                        <h3>Breakfast</h3>
-                        <p>Complimentary breakfast buffet every morning</p>
-                    </div>
-                    
-                    <div class="amenity-card">
-                        <div class="amenity-icon">
-                            <i data-feather="droplet"></i>
-                        </div>
-                        <h3>Pool</h3>
-                        <p>Heated outdoor pool available year-round</p>
-                    </div>
-                    
-                    <div class="amenity-card">
-                        <div class="amenity-icon">
-                            <i data-feather="umbrella"></i>
-                        </div>
-                        <h3>Beach Access</h3>
-                        <p>Private beach access with complimentary chairs</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="testimonials">
-            <div class="container">
-                <h2 class="section-title">What Our Guests Say</h2>
-                <div class="testimonial-slider">
-                    <div class="testimonial-card">
-                        <div class="testimonial-content">
-                            <div class="rating">
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star" class="filled"></i>
-                            </div>
-                            <p>"The service was impeccable and the room was even better than the photos. Will definitely be returning!"</p>
-                            <div class="guest-info">
-                                <div class="guest-avatar" style="background-image: url('http://static.photos/people/100x100/1');"></div>
-                                <div>
-                                    <h4>Sarah Johnson</h4>
-                                    <p>New York, USA</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="testimonial-card">
-                        <div class="testimonial-content">
-                            <div class="rating">
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star"></i>
-                            </div>
-                            <p>"The location was perfect and the staff went above and beyond to make our stay memorable."</p>
-                            <div class="guest-info">
-                                <div class="guest-avatar" style="background-image: url('http://static.photos/people/100x100/2');"></div>
-                                <div>
-                                    <h4>Michael Chen</h4>
-                                    <p>Toronto, Canada</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer class="footer">
-    <div class="container footer-grid">
-        <div class="footer-about">
-            <h3>Nomado</h3>
-            <p>Your gateway to luxury, comfort, and unforgettable stays. Discover curated accommodations in the world’s most desirable destinations.</p>
-        </div>
-
-        <div class="footer-links">
-            <h4>Quick Links</h4>
+        <nav class="main-nav">
             <ul>
                 <li><a href="Home.html">Home</a></li>
                 <li><a href="deals.html">Deals</a></li>
                 <li><a href="About_Us.html">About us</a></li>
             </ul>
-        </div>
-
-        <div class="footer-contact">
-            <h4>Contact Us</h4>
-            <ul>
-                <li><i data-feather="map-pin"></i> 123 Ocean View Blvd, Miami, FL</li>
-                <li><i data-feather="phone"></i> +1 (305) 555-7890</li>
-                <li><i data-feather="mail"></i> info@nomado.com</li>
-            </ul>
-        </div>
-
-        <div class="footer-social">
-            <h4>Follow Us</h4>
-            <div class="social-icons">
-                <a href="#"><i data-feather="facebook"></i></a>
-                <a href="#"><i data-feather="instagram"></i></a>
-                <a href="#"><i data-feather="twitter"></i></a>
-                <a href="#"><i data-feather="linkedin"></i></a>
-            </div>
+        </nav>
+        <div class="auth-buttons">
+            <a href="Login.html" class="btn btn-primary">Sign Up</a>
         </div>
     </div>
+</header>
 
-    <div class="footer-bottom">
-        <p>&copy; 2025 Nomado. All rights reserved.</p>
+<main>
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Find Your Perfect Stay</h2>
+            <p>Discover luxury accommodations tailored to your needs</p>
+        </div>
+    </section>
+
+    <!-- Featured Rooms -->
+    <section class="featured-rooms">
+        <div class="container">
+            <h2 class="section-title">Featured Rooms</h2>
+            <div class="rooms-grid">
+                <?php foreach($featuredHotels as $hotel): ?>
+                    <?php
+                        $imageName = str_replace(' ', '_', $hotel['pavadinimas']);
+                        $imagePath = "Images/{$imageName}.jpg";
+                        if (!file_exists($imagePath)) {
+                            $imagePath = "Images/{$imageName}.jpeg";
+                        }
+                    ?>
+                    <div class="room-card">
+                        <div class="room-image" style="background-image: url('<?php echo $imagePath; ?>');"></div>
+                        <div class="room-details">
+                            <h3><?php echo $hotel['pavadinimas']; ?></h3>
+                            <div class="room-features">
+                                <span><i data-feather="users"></i> 2 Guests</span>
+                                <span><i data-feather="maximize-2"></i> <?php echo $hotel['kambariu_skaicius']*20; ?>m²</span>
+                                <span><i data-feather="wifi"></i> Free WiFi</span>
+                            </div>
+                            <div class="room-price">
+                                <span class="price">$<?php echo $hotel['kaina']; ?></span>
+                                <span class="per-night">/ night</span>
+                            </div>
+                            <form action="Hotel_Details.php" method="GET">
+                                <input type="hidden" name="id" value="<?php echo $hotel['id']; ?>">
+                                <button type="submit" class="btn btn-outline">View Details</button>
+                            </form>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seasonal Deals -->
+    <section class="featured-rooms">
+        <div class="container">
+            <h2 class="section-title">Seasonal Deals</h2>
+            <div class="rooms-grid">
+                <?php foreach($seasonalDeals as $hotel): ?>
+                    <?php
+                        $imageName = str_replace(' ', '_', $hotel['pavadinimas']);
+                        $imagePath = "Images/{$imageName}.jpg";
+                        if (!file_exists($imagePath)) {
+                            $imagePath = "Images/{$imageName}.jpeg";
+                        }
+                    ?>
+                    <div class="room-card">
+                        <div class="room-image" style="background-image: url('<?php echo $imagePath; ?>');"></div>
+                        <div class="room-details">
+                            <h3><?php echo $hotel['pavadinimas']; ?></h3>
+                            <div class="room-features">
+                                <span><i data-feather="users"></i> 2 Guests</span>
+                                <span><i data-feather="maximize-2"></i> <?php echo $hotel['kambariu_skaicius']*20; ?>m²</span>
+                                <span><i data-feather="wifi"></i> Free WiFi</span>
+                            </div>
+                            <div class="room-price">
+                                <span class="price">$<?php echo $hotel['kaina']; ?></span>
+                                <span class="per-night">/ night</span>
+                            </div>
+                            <form action="Hotel_Details.php" method="GET">
+                                <input type="hidden" name="id" value="<?php echo $hotel['id']; ?>">
+                                <button type="submit" class="btn btn-outline">View Details</button>
+                            </form>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recommended Hotels -->
+    <?php if(!empty($recommendedHotels)): ?>
+        <section class="featured-rooms">
+            <div class="container">
+                <h2 class="section-title">Recommended for You</h2>
+                <div class="rooms-grid">
+                    <?php foreach($recommendedHotels as $hotel): ?>
+                        <?php
+                            $imageName = str_replace(' ', '_', $hotel['pavadinimas']);
+                            $imagePath = "Images/{$imageName}.jpg";
+                            if (!file_exists($imagePath)) {
+                                $imagePath = "Images/{$imageName}.jpeg";
+                            }
+                        ?>
+                        <div class="room-card">
+                            <div class="room-image" style="background-image: url('<?php echo $imagePath; ?>');"></div>
+                            <div class="room-details">
+                                <h3><?php echo $hotel['pavadinimas']; ?></h3>
+                                <div class="room-features">
+                                    <span><i data-feather="users"></i> 2 Guests</span>
+                                    <span><i data-feather="maximize-2"></i> <?php echo $hotel['kambariu_skaicius']*20; ?>m²</span>
+                                    <span><i data-feather="wifi"></i> Free WiFi</span>
+                                </div>
+                                <div class="room-price">
+                                    <span class="price">$<?php echo $hotel['kaina']; ?></span>
+                                    <span class="per-night">/ night</span>
+                                </div>
+                                <form action="Hotel_Details.php" method="GET">
+                                    <input type="hidden" name="id" value="<?php echo $hotel['id']; ?>">
+                                    <button type="submit" class="btn btn-outline">View Details</button>
+                                </form>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </section>
+    <?php endif; ?>
+
+</main>
+
+<footer class="footer">
+    <div class="container footer-grid">
+        <div class="footer-about">
+            <h3>Nomado</h3>
+            <p>Your gateway to luxury, comfort, and unforgettable stays. Discover curated accommodations in the world’s most desirable destinations.</p>
+        </div>
     </div>
 </footer>
 
-    <script>
-        feather.replace();
-    </script>
-    <script src="components/footer.js"></script>
+<script>
+    feather.replace();
+</script>
 </body>
 </html>
