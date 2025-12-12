@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 11, 2025 at 07:11 PM
+-- Generation Time: Dec 12, 2025 at 06:55 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -176,6 +176,22 @@ CREATE TABLE `tag` (
   `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_lithuanian_ci;
 
+--
+-- Dumping data for table `tag`
+--
+
+INSERT INTO `tag` (`kategorija`, `pavadinimas`, `tipas`, `id`) VALUES
+('style', 'luxury', 'hotel', 1),
+('style', 'budget', 'hotel', 2),
+('location', 'beachfront', 'hotel', 3),
+('location', 'city-center', 'hotel', 4),
+('style', 'ski-resort', 'hotel', 5),
+('audience', 'family-friendly', 'hotel', 6),
+('style', 'boutique', 'hotel', 7),
+('audience', 'romantic', 'hotel', 8),
+('amenities', 'spa', 'hotel', 9),
+('amenities', 'pet-friendly', 'hotel', 10);
+
 -- --------------------------------------------------------
 
 --
@@ -183,10 +199,12 @@ CREATE TABLE `tag` (
 --
 
 CREATE TABLE `vartotojas` (
+  `vartotojo_vardas` varchar(11) NOT NULL,
   `asmens_kodas` varchar(11) NOT NULL,
   `vardas` varchar(30) NOT NULL,
   `pavarde` varchar(25) NOT NULL,
   `el_pastas` varchar(70) NOT NULL,
+  `slaptazodis` varchar(255) NOT NULL,
   `tipas` int(11) NOT NULL,
   `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_lithuanian_ci;
@@ -211,7 +229,7 @@ CREATE TABLE `vartotojo_istorija` (
 
 CREATE TABLE `vartotoju_tipas` (
   `id` int(11) NOT NULL,
-  `name` char(5) NOT NULL
+  `name` char(15) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_lithuanian_ci;
 
 --
@@ -220,7 +238,8 @@ CREATE TABLE `vartotoju_tipas` (
 
 INSERT INTO `vartotoju_tipas` (`id`, `name`) VALUES
 (1, 'admin'),
-(2, 'user');
+(2, 'user'),
+(3, 'unverified');
 
 -- --------------------------------------------------------
 
@@ -258,6 +277,22 @@ CREATE TABLE `viesbutis` (
   `fk_Vietove` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_lithuanian_ci;
 
+--
+-- Dumping data for table `viesbutis`
+--
+
+INSERT INTO `viesbutis` (`pavadinimas`, `aprasymas`, `trumpas_aprasymas`, `nuolaida`, `sukurimo_data`, `kaina`, `reitingas`, `kambariu_skaicius`, `sezonas`, `id`, `fk_Vietove`) VALUES
+('Venice Retreat', 'Luxury hotel along the canals of Venice.', 'Romantic getaway.', 0, '2025-01-01', 199, 4.8, 25, 1, 1, 1),
+('Florence Suites', 'Elegant suites in the heart of Florence.', 'Artistic comfort.', 5, '2025-02-10', 249, 4.7, 30, 2, 2, 2),
+('Zermatt Alpine Lodge', 'Cozy winter lodge in the Swiss Alps.', 'Winter paradise.', 10, '2025-03-05', 300, 4.9, 40, 3, 3, 3),
+('Paris Elegance', 'Luxury boutique hotel in Paris.', 'City of love.', 0, '2025-01-15', 220, 4.6, 20, 2, 4, 4),
+('Oslo Fjord Resort', 'Modern resort by the Oslo fjord.', 'Scandinavian style.', 15, '2025-04-01', 180, 4.5, 35, 4, 5, 5),
+('Innsbruck Mountain Hotel', 'Alpine hotel near ski slopes.', 'Winter & adventure.', 20, '2025-03-12', 270, 4.8, 45, 3, 6, 6),
+('Miami Beach Resort', 'Tropical beach resort in Miami.', 'Sun & sand.', 0, '2025-02-20', 199, 4.4, 50, 1, 7, 7),
+('Sapporo Snow Inn', 'Perfect winter stay in Sapporo.', 'Ski and snow.', 10, '2025-03-18', 210, 4.7, 30, 3, 8, 8),
+('Whistler Peak Hotel', 'Ski resort in Canada’s Rockies.', 'Snow adventure.', 5, '2025-04-05', 320, 4.9, 25, 3, 9, 9),
+('Barcelona City Hotel', 'Modern hotel in the heart of Barcelona.', 'Culture & nightlife.', 0, '2025-01-28', 200, 4.3, 40, 2, 10, 10);
+
 -- --------------------------------------------------------
 
 --
@@ -271,6 +306,32 @@ CREATE TABLE `viesbutis_tag` (
   `fk_Viesbutis` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_lithuanian_ci;
 
+--
+-- Dumping data for table `viesbutis_tag`
+--
+
+INSERT INTO `viesbutis_tag` (`reiksme`, `id`, `fk_Tag`, `fk_Viesbutis`) VALUES
+('luxury', 1, 1, 1),
+('romantic', 2, 8, 1),
+('boutique', 3, 7, 2),
+('luxury', 4, 1, 2),
+('ski-resort', 5, 5, 3),
+('luxury', 6, 1, 3),
+('city-center', 7, 4, 4),
+('luxury', 8, 1, 4),
+('fjord-view', 9, 3, 5),
+('family-friendly', 10, 6, 5),
+('ski-resort', 11, 5, 6),
+('luxury', 12, 1, 6),
+('beachfront', 13, 3, 7),
+('family-friendly', 14, 6, 7),
+('ski-resort', 15, 5, 8),
+('luxury', 16, 1, 8),
+('ski-resort', 17, 5, 9),
+('luxury', 18, 1, 9),
+('city-center', 19, 4, 10),
+('boutique', 20, 7, 10);
+
 -- --------------------------------------------------------
 
 --
@@ -283,6 +344,22 @@ CREATE TABLE `vietove` (
   `adresas` varchar(50) NOT NULL,
   `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_lithuanian_ci;
+
+--
+-- Dumping data for table `vietove`
+--
+
+INSERT INTO `vietove` (`salis`, `miestas`, `adresas`, `id`) VALUES
+('Italy', 'Venice', '123 Canal St', 1),
+('Italy', 'Florence', '45 Renaissance Ave', 2),
+('Switzerland', 'Zermatt', '12 Alpine Rd', 3),
+('France', 'Paris', '78 Champs Elysees', 4),
+('Norway', 'Oslo', '5 Fjord St', 5),
+('Austria', 'Innsbruck', '22 Mountain Rd', 6),
+('USA', 'Miami', '101 Ocean Drive', 7),
+('Japan', 'Sapporo', '33 Snow St', 8),
+('Canada', 'Whistler', '7 Ski Lane', 9),
+('Spain', 'Barcelona', '9 Gaudi Blvd', 10);
 
 --
 -- Indexes for dumped tables
@@ -409,6 +486,106 @@ ALTER TABLE `viesbutis_tag`
 --
 ALTER TABLE `vietove`
   ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `filtravimo_konfiguracija`
+--
+ALTER TABLE `filtravimo_konfiguracija`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `filtravimo_konfiguracijos_tag`
+--
+ALTER TABLE `filtravimo_konfiguracijos_tag`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `komentaras`
+--
+ALTER TABLE `komentaras`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `megstamiausias_viesbutis`
+--
+ALTER TABLE `megstamiausias_viesbutis`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `nuotraukos`
+--
+ALTER TABLE `nuotraukos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `patvirtinimas`
+--
+ALTER TABLE `patvirtinimas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `rezervacija`
+--
+ALTER TABLE `rezervacija`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `sezonas`
+--
+ALTER TABLE `sezonas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `tag`
+--
+ALTER TABLE `tag`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `vartotojas`
+--
+ALTER TABLE `vartotojas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `vartotojo_istorija`
+--
+ALTER TABLE `vartotojo_istorija`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `vartotoju_tipas`
+--
+ALTER TABLE `vartotoju_tipas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `vertinimas`
+--
+ALTER TABLE `vertinimas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `viesbutis`
+--
+ALTER TABLE `viesbutis`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `viesbutis_tag`
+--
+ALTER TABLE `viesbutis_tag`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT for table `vietove`
+--
+ALTER TABLE `vietove`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Constraints for dumped tables
