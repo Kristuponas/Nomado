@@ -50,15 +50,15 @@ function checkpassformat($pwd) {
 }
 
 function checkdb($username) {  
-    $db = mysqli_connect(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
+    $db = $db = Database::getInstance();
 
-    $sql = "SELECT * FROM vartotojas WHERE vartotojo_vardas = '$username'";
-    $result = mysqli_query($db, $sql);
+    
+    $where = ['vartotojo_vardas'=> $username];
+    $row = $db->select('vartotojas', $where)[0];
 
     $uname = $upass = $ulevel = $uid = $umail = $uPersonalID = null;
 
-    if ($result && mysqli_num_rows($result) == 1) {  
-        $row = mysqli_fetch_assoc($result); 
+    if (!empty($row)) {   
         $uname = $row["vartotojo_vardas"];
         $upass = $row["slaptazodis"];
         $ulevel = $row["tipas"];
