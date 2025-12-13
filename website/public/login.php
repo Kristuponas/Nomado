@@ -14,10 +14,10 @@ $_SESSION['prev'] = "register";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     switch ($_POST['action']) {
         case 'register':
-            require __DIR__ . '/../src/procregister.php';
+            require __DIR__ . '/../src/auth/procregister.php';
             break;
         case 'login':
-            require __DIR__ . '/../src/proclogin.php';
+            require __DIR__ . '/../src/auth/proclogin.php';
             break;
     }
 
