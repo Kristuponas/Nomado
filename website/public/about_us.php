@@ -19,7 +19,6 @@
         <p style="font-size: 150px; padding-top: 200px;">ABOUT US</p>
     </main>
 
-
     <?php include __DIR__ . '/../templates/footer.php' ?>
 
     <script>

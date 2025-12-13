@@ -1,11 +1,24 @@
 <?php
 session_start();
 
-include("Properties/nustatymai.php");
-include("Properties/functions.php");
+require_once "functions.php";
+require_once "database/database.php";
+
+$uregister="self";
+
+// Vartotojų profiliai
+$user_roles=array(      // vartotojų rolių vardai ir  atitinkamos userlevel reikšmės
+	"admin"=>"1",
+	"user"=>"2",
+    "unverified"=>"3");   
+
+define("DEFAULT_LEVEL","unverified");  // kokia rolė priskiriama kai registruojasi
+define("ADMIN_LEVEL","admin");  // jis turi vartotojų valdymo teisę per "Administratoriaus sąsaja"
+
+$db = Database::getInstance();
 
 if (!isset($_POST['user_reg'])) {
-    header("Location: ../Public/Login.php");
+    header("Location: /login.php");
     exit;
 }
 
@@ -23,20 +36,20 @@ $_SESSION['mail_reg'] = $mail;
 // VALIDACIJA
 if (!checkname($user)) {
     $_SESSION['name_error'] = "Bad username";
-    header("Location: ../Public/Login.php");
+    header("Location: /login.php");
     exit;
 }
 
 list($dbuname) = checkdb($user);
 if ($dbuname) {
     $_SESSION['name_error'] = "Username already exists";
-    header("Location: ../Public/Login.php");
+    header("Location: /login.php");
     exit;
 }
 
 if (!checkmail($mail) || !checkpassformat($pass)) {
     $_SESSION['pass_error'] = "Password or email invalid";
-    header("Location: ../Public/Login.php");
+    header("Location: /login.php");
     exit;
 }
 
@@ -44,17 +57,22 @@ if (!checkmail($mail) || !checkpassformat($pass)) {
 $passHash = password_hash($pass, PASSWORD_DEFAULT);
 $ulevel = $user_roles[DEFAULT_LEVEL];
 
-$db = mysqli_connect(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
+$data = [
+	'vartotojo_vardas' => $user, 
+	'asmens_kodas' => $ID_number, 
+	'vardas' => $name, 
+	'pavarde' => $surname, 
+	'el_pastas' => $mail,
+	'slaptazodis' => $passHash,
+	'tipas' => $ulevel
+	];
 
-$sql = "INSERT INTO vartotojas 
-(vartotojo_vardas, asmens_kodas, vardas, pavarde, el_pastas, slaptazodis, tipas)
-VALUES ('$user', '$ID_number', '$name', '$surname', '$mail', '$passHash', '$ulevel')";
-
-if (!mysqli_query($db, $sql)) {
-    $_SESSION['message'] = "SQL ERROR: " . mysqli_error($db);
-} else {
+try {
+    $db->insert('vartotojas', $data);
     $_SESSION['message'] = "Registracija sėkminga!";
+} catch (Exception $e) {
+    $_SESSION['message'] = "SQL ERROR " . $e->getMessage();
 }
 
-header("Location: ../Public/Login.php");
+header("Location: /login.php");
 exit;

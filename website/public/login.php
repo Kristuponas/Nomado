@@ -6,8 +6,8 @@ if (!isset($_SESSION)) {
 }
 $_SESSION['prev'] = "register";
 
-include($_SERVER['DOCUMENT_ROOT'] . "/../src/properties/nustatymai.php");
-include($_SERVER['DOCUMENT_ROOT'] . "/../src/properties/functions.php");
+include(__DIR__ . "/../src/properties/nustatymai.php");
+include(__DIR__ . "/../src/properties/functions.php");
 if ($_SESSION['prev'] != "procregister")  inisession("part"); 
 $_SESSION['prev']="register";
 ?>

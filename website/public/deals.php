@@ -13,7 +13,7 @@
 </head>
 <body>
 
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/../templates/navbar.php' ?>
+    <?php include __DIR__ . '/../templates/navbar.php' ?>
 
     <main>
         <section class="featured-rooms">

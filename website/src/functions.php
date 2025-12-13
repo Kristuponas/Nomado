@@ -1,7 +1,4 @@
 <?php
-// funkcijos  include/functions.php
-require_once "nustatymai.php";
-
 function inisession($arg) { 
             if($arg =="full"){
                 $_SESSION['message']="";
