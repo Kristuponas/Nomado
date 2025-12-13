@@ -6,10 +6,17 @@ if (!isset($_SESSION)) {
 }
 $_SESSION['prev'] = "register";
 
-include(__DIR__ . "/../src/properties/nustatymai.php");
-include(__DIR__ . "/../src/properties/functions.php");
+include(__DIR__ . "/../src/functions.php");
 if ($_SESSION['prev'] != "procregister")  inisession("part"); 
 $_SESSION['prev']="register";
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    switch ($_POST['action']) {
+        case 'register':
+	    require __DIR__ . '/../src/procregister.php';
+	    break;
+    }
+}
 ?>
 <html>
     <head>
@@ -56,6 +63,8 @@ $_SESSION['prev']="register";
                     </div>
                     <div class="sign-up-htm">
                         <form action="../src/procregister.php" method="POST">
+			    <input type="invisible" name="action" value="register">
+
                             <div class ="group">
                                 <label for ="user" class="label">Name</label>
                                 <input id="user" type="text" class="input" name="name_reg">
