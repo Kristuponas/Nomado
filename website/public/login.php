@@ -6,9 +6,8 @@ if (!isset($_SESSION)) {
 }
 $_SESSION['prev'] = "register";
 
-
-include("../src/Properties/nustatymai.php");
-include("../src/Properties/functions.php");
+include($_SERVER['DOCUMENT_ROOT'] . "/../src/properties/nustatymai.php");
+include($_SERVER['DOCUMENT_ROOT'] . "/../src/properties/functions.php");
 if ($_SESSION['prev'] != "procregister")  inisession("part"); 
 $_SESSION['prev']="register";
 ?>
@@ -17,8 +16,8 @@ $_SESSION['prev']="register";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nomado - Luxury Hotel Booking</title>
-    <link rel="stylesheet" href="../CSSStyles/style.css">
-    <link rel="stylesheet" href="../CSSStyles/Login_stilius.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/login_style.css">
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <script src="https://unpkg.com/feather-icons"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,21 +25,9 @@ $_SESSION['prev']="register";
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <div class="logo">
-                <h1>Nomado</h1>
-                <p>Where comfort meets luxury</p>
-            </div>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="Home.html">Home</a></li>
-                    <li><a href="deals.html">Deals</a></li>
-                    <li><a href="About_Us.html">About us</a></li>
-                </ul>
-            </nav>
-    </div>
-    </header>    
+
+<?php include __DIR__ . '/../templates/navbar.php' ?>
+
         <div class = "login-wrap">
             <div class="login-html">
                 <input id="tab-1" type="radio" name="tab" class="sign-in" checked>

@@ -1,6 +1,5 @@
 <?php
-
-require_once 'database/config.php';
+require_once 'config.php';
 
 class Database
 {

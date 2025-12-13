@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/database.php';
+require_once __DIR__ . '/../src/database/database.php';
 
 // Database instance
 $db = Database::getInstance();
@@ -47,29 +47,13 @@ if(!empty($viewedHotels)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nomado - Luxury Hotel Booking</title>
-    <link rel="stylesheet" href="CSSStyles/style.css">
+    <link rel="stylesheet" href="../css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <script src="https://unpkg.com/feather-icons"></script>
 </head>
 <body>
-<header class="header">
-    <div class="container">
-        <div class="logo">
-            <h1>Nomado</h1>
-            <p>Where comfort meets luxury</p>
-        </div>
-        <nav class="main-nav">
-            <ul>
-                <li><a href="Home.html">Home</a></li>
-                <li><a href="deals.html">Deals</a></li>
-                <li><a href="About_Us.html">About us</a></li>
-            </ul>
-        </nav>
-        <div class="auth-buttons">
-            <a href="Login.html" class="btn btn-primary">Sign Up</a>
-        </div>
-    </div>
-</header>
+
+<?php include __DIR__ . '/../templates/navbar.php' ?>
 
 <main>
     <section class="hero">
@@ -87,9 +71,9 @@ if(!empty($viewedHotels)) {
                 <?php foreach($featuredHotels as $hotel): ?>
                     <?php
                         $imageName = str_replace(' ', '_', $hotel['pavadinimas']);
-                        $imagePath = "Images/{$imageName}.jpg";
+                        $imagePath = "images/{$imageName}.jpg";
                         if (!file_exists($imagePath)) {
-                            $imagePath = "Images/{$imageName}.jpeg";
+                            $imagePath = "images/{$imageName}.jpeg";
                         }
                     ?>
                     <div class="room-card">
@@ -105,7 +89,7 @@ if(!empty($viewedHotels)) {
                                 <span class="price">$<?php echo $hotel['kaina']; ?></span>
                                 <span class="per-night">/ night</span>
                             </div>
-                            <form action="Hotel_Details.php" method="GET">
+                            <form action="hotel_details.php" method="GET">
                                 <input type="hidden" name="id" value="<?php echo $hotel['id']; ?>">
                                 <button type="submit" class="btn btn-outline">View Details</button>
                             </form>
@@ -124,9 +108,9 @@ if(!empty($viewedHotels)) {
                 <?php foreach($seasonalDeals as $hotel): ?>
                     <?php
                         $imageName = str_replace(' ', '_', $hotel['pavadinimas']);
-                        $imagePath = "Images/{$imageName}.jpg";
+                        $imagePath = "images/{$imageName}.jpg";
                         if (!file_exists($imagePath)) {
-                            $imagePath = "Images/{$imageName}.jpeg";
+                            $imagePath = "images/{$imageName}.jpeg";
                         }
                     ?>
                     <div class="room-card">
@@ -142,7 +126,7 @@ if(!empty($viewedHotels)) {
                                 <span class="price">$<?php echo $hotel['kaina']; ?></span>
                                 <span class="per-night">/ night</span>
                             </div>
-                            <form action="Hotel_Details.php" method="GET">
+                            <form action="hotel_details.php" method="GET">
                                 <input type="hidden" name="id" value="<?php echo $hotel['id']; ?>">
                                 <button type="submit" class="btn btn-outline">View Details</button>
                             </form>
@@ -180,7 +164,7 @@ if(!empty($viewedHotels)) {
                                     <span class="price">$<?php echo $hotel['kaina']; ?></span>
                                     <span class="per-night">/ night</span>
                                 </div>
-                                <form action="Hotel_Details.php" method="GET">
+                                <form action="hotel_details.php" method="GET">
                                     <input type="hidden" name="id" value="<?php echo $hotel['id']; ?>">
                                     <button type="submit" class="btn btn-outline">View Details</button>
                                 </form>
@@ -194,17 +178,12 @@ if(!empty($viewedHotels)) {
 
 </main>
 
-<footer class="footer">
-    <div class="container footer-grid">
-        <div class="footer-about">
-            <h3>Nomado</h3>
-            <p>Your gateway to luxury, comfort, and unforgettable stays. Discover curated accommodations in the world’s most desirable destinations.</p>
-        </div>
-    </div>
-</footer>
+<?php include __DIR__ . '/../templates/footer.php' ?>
 
 <script>
     feather.replace();
 </script>
+<script src="components/footer.js"></script>
+
 </body>
 </html>

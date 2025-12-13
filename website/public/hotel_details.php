@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nomado - Luxury Hotel Booking</title>
-    <link rel="stylesheet" href="../CSSStyles/Details_style.css">
+    <link rel="stylesheet" href="css/details_style.css">
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <script src="https://unpkg.com/feather-icons"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,37 +16,21 @@
 </head>
 
 <body>
-    <header class="header">
-        <div class="container">
-            <div class="logo">
-                <h1>Nomado</h1>
-                <p>Where comfort meets luxury</p>
-            </div>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="Home.html">Home</a></li>
-                    <li><a href="deals.html">Deals</a></li>
-                    <li><a href="About_Us.html">About us</a></li>
-                </ul>
-            </nav>
-            <div class="auth-buttons">
-                <a href="Login.html" class="btn btn-primary">Sign Up</a>
-            </div>
-        </div>
-    </header>
+
+<?php include __DIR__ . '/../templates/navbar.php' ?>
 
     <main>
         <!-- Image Slider -->
         <section class="image-slider">
             <div class="slider-container">
                 <div class="slide active">
-                    <img src="../Images/Hotel_Details_Danieli4.jpg" alt="Room 1" class="slider-image">
+                    <img src="images/Hotel_Details_Danieli4.jpg" alt="Room 1" class="slider-image">
                 </div>
                 <div class="slide">
-                    <img src="../Images/Hotel_Details_Danieli5.jpg" alt="Room 2" class="slider-image">
+                    <img src="images/Hotel_Details_Danieli5.jpg" alt="Room 2" class="slider-image">
                 </div>
                 <div class="slide">
-                    <img src="../Images/Hotel_Details_Danieli3.jpg" alt="Room 3" class="slider-image">
+                    <img src="images/Hotel_Details_Danieli3.jpg" alt="Room 3" class="slider-image">
                 </div>
                 <button class="prev">&#10094;</button>
                 <button class="next">&#10095;</button>
@@ -109,7 +93,7 @@
         <div class="map-picture">
 
             <h2 class="location">Location</h2>
-            <img src ="../Images/map.jpg" class="map">
+            <img src ="images/map.jpg" class="map">
         </div>
         <section class="testimonials">
             <div class="container">
@@ -164,52 +148,14 @@
         </div>
 
     </main>
-    <footer class="footer">
-        <div class="container footer-grid">
-            <div class="footer-about">
-                <h3>Nomado</h3>
-                <p>Your gateway to luxury, comfort, and unforgettable stays. Discover curated accommodations in the
-                    world’s most desirable destinations.</p>
-            </div>
 
-            <div class="footer-links">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="Home.html">Home</a></li>
-                    <li><a href="deals.html">Deals</a></li>
-                    <li><a href="About_Us.html">About us</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-contact">
-                <h4>Contact Us</h4>
-                <ul>
-                    <li><i data-feather="map-pin"></i> 123 Ocean View Blvd, Miami, FL</li>
-                    <li><i data-feather="phone"></i> +1 (305) 555-7890</li>
-                    <li><i data-feather="mail"></i> info@nomado.com</li>
-                </ul>
-            </div>
-
-            <div class="footer-social">
-                <h4>Follow Us</h4>
-                <div class="social-icons">
-                    <a href="#"><i data-feather="facebook"></i></a>
-                    <a href="#"><i data-feather="instagram"></i></a>
-                    <a href="#"><i data-feather="twitter"></i></a>
-                    <a href="#"><i data-feather="linkedin"></i></a>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <p>&copy; 2025 Nomado. All rights reserved.</p>
-        </div>
-    </footer>
+    <?php include __DIR__ . '/../templates/footer.php' ?>
 
     <script>
         feather.replace();
     </script>
     <script src="components/footer.js"></script>
+
     <script>
         // Slider functionality (same as before)
         const slides = document.querySelectorAll('.slide');
@@ -249,7 +195,6 @@
         modal.addEventListener('click', (e) => {
             if (e.target === modal) modal.style.display = 'none';
         });
-
     </script>
 </body>
 

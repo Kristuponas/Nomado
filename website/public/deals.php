@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nomado - Luxury Hotel Booking</title>
-    <link rel="stylesheet" href="../CSSStyles/style.css">
+    <title>DreamStay Haven - Luxury Hotel Booking</title>
+    <link rel="stylesheet" href="../css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <script src="https://unpkg.com/feather-icons"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,83 +12,38 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <div class="logo">
-                <h1>Nomado</h1>
-                <p>Where comfort meets luxury</p>
-            </div>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="Home.html">Home</a></li>
-                    <li><a href="deals.html">Deals</a></li>
-                    <li><a href="About_Us.html">About us</a></li>
-                </ul>
-            </nav>
-            <div class="auth-buttons">
-                <a href="Login.html" class="btn btn-primary">Sign Up</a>
-            </div>
-        </div>
-    </header>
+
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/../templates/navbar.php' ?>
 
     <main>
-        <section class="hero">
-            <div class="hero-content">
-                <h2>Find Your Perfect Stay</h2>
-                <p>Discover luxury accommodations tailored to your needs</p>
-                
-                <div class="search-box">
-                    <div class="search-field">
-                        <i data-feather="map-pin"></i>
-                        <input type="text" placeholder="Destination">
-                    </div>
-                    <div class="search-field">
-                        <i data-feather="calendar"></i>
-                        <input type="text" placeholder="Check-in">
-                    </div>
-                    <div class="search-field">
-                        <i data-feather="calendar"></i>
-                        <input type="text" placeholder="Check-out">
-                    </div>
-                    <div class="search-field">
-                        <i data-feather="users"></i>
-                        <input type="text" placeholder="Guests">
-                    </div>
-                    <button class="btn btn-primary btn-search">
-                        <i data-feather="search"></i> Search
-                    </button>
-                </div>
-            </div>
-        </section>
-
         <section class="featured-rooms">
             <div class="container">
                 <h2 class="section-title">Featured Rooms</h2>
                 <div class="rooms-grid">
                     <div class="room-card">
-                        <div class="room-image" style="background-image: url('../Images/Danieli_image.jpeg');"></div>
+                        <div class="room-image" style="background-image: url('./images/Danieli_image.jpeg');"></div>
                         <div class="room-details">
                             <h3>Venice Retreat</h3>
                             <div class="room-features">
-                                <span><i data-feather="users"></i> 2 Guests</span>
-                                <span><i data-feather="maximize-2"></i> 45m²</span>
+                                <span><i data-feather="users"></i> 5 Guests</span>
+                                <span><i data-feather="maximize-2"></i> 65m²</span>
                                 <span><i data-feather="wifi"></i> Free WiFi</span>
                             </div>
                             <div class="room-price">
                                 <span class="price">$199</span>
                                 <span class="per-night">/ night</span>
                             </div>
-                            <button onclick = "window.location.href= 'Hotel_Details.html'" class="btn btn-outline">View Details</button>
+                            <button onclick = "window.location.href='home.php'" class="btn btn-outline">View Details</button>
                         </div>
                     </div>
                     
                     <div class="room-card">
-                        <div class="room-image" style="background-image: url('../Images/Belmond_image.jpg');"></div>
+                        <div class="room-image" style="background-image: url('/images/Belmond_image.jpg');"></div>
                         <div class="room-details">
                             <h3>Belmond Manor</h3>
                             <div class="room-features">
-                                <span><i data-feather="users"></i> 2 Guests</span>
-                                <span><i data-feather="maximize-2"></i> 35m²</span>
+                                <span><i data-feather="users"></i> 6 Guests</span>
+                                <span><i data-feather="maximize-2"></i> 75m²</span>
                                 <span><i data-feather="wifi"></i> Free WiFi</span>
                             </div>
                             <div class="room-price">
@@ -100,7 +55,7 @@
                     </div>
                     
                     <div class="room-card">
-                        <div class="room-image" style="background-image: url('../Images/Italian_four_seasons_Image.jpeg');"></div>
+                        <div class="room-image" style="background-image: url('/images/Italian_four_seasons_Image.jpeg');"></div>
                         <div class="room-details">
                             <h3>Florence Suites</h3>
                             <div class="room-features">
@@ -124,7 +79,7 @@
                 <h2 class="section-title">Seasonal Deals</h2>
                 <div class="rooms-grid">
                     <div class="room-card">
-                        <div class="room-image" style="background-image: url('../Images/Nordic_image.jpg');"></div>
+                        <div class="room-image" style="background-image: url('/images/Nordic_image.jpg');"></div>
                         <div class="room-details">
                             <h3>Nordic Winter Escape</h3>
                             <div class="room-features">
@@ -141,7 +96,7 @@
                     </div>
                     
                     <div class="room-card">
-                        <div class="room-image" style="background-image: url('../Images/Tuscan_image.jpg');"></div>
+                        <div class="room-image" style="background-image: url('/images/Tuscan_image.jpg');"></div>
                         <div class="room-details">
                             <h3>Tuskan Sun Stay</h3>
                             <div class="room-features">
@@ -158,7 +113,7 @@
                     </div>
                     
                     <div class="room-card">
-                        <div class="room-image" style="background-image: url('../Images/Seaside_hotel.jpg');"></div>
+                        <div class="room-image" style="background-image: url('/images/Seaside_hotel.jpg');"></div>
                         <div class="room-details">
                             <h3>Seaside serenity</h3>
                             <div class="room-features">
@@ -178,7 +133,138 @@
         </section>
         <section class="hotel-categories">
     
+<section class="featured-rooms">
+            <div class="container">
+                <h2 class="section-title">Elegant & Timeless</h2>
+                <div class="rooms-grid">
+                    <div class="room-card">
+                        <div class="room-image" style="background-image: url('/images/Four_seasons_image.jpg');"></div>
+                        <div class="room-details">
+                            <h3>Four seasons stay</h3>
+                            <div class="room-features">
+                                <span><i data-feather="users"></i> 5 Guests</span>
+                                <span><i data-feather="maximize-2"></i> 65m²</span>
+                                <span><i data-feather="wifi"></i> Free WiFi</span>
+                            </div>
+                            <div class="room-price">
+                                <span class="price">$169</span>
+                                <span class="per-night">/ night</span>
+                            </div>
+                            <button class="btn btn-outline">View Details</button>
+                        </div>
+                    </div>
+                    
+                    <div class="room-card">
+                        <div class="room-image" style="background-image: url('/images/Six_senses_image.jpg');"></div>
+                        <div class="room-details">
+                            <h3>Six senses stay</h3>
+                            <div class="room-features">
+                                <span><i data-feather="users"></i> 4 Guests</span>
+                                <span><i data-feather="maximize-2"></i> 50m²</span>
+                                <span><i data-feather="wifi"></i> Free WiFi</span>
+                            </div>
+                            <div class="room-price">
+                                <span class="price">219</span>
+                                <span class="per-night">/ night</span>
+                            </div>
+                            <button class="btn btn-outline">View Details</button>
+                        </div>
+                    </div>
+                    
+                    <div class="room-card">
+                        <div class="room-image" style="background-image: url('/images/Aman_image.jpg');"></div>
+                        <div class="room-details">
+                            <h3>Aman Resort</h3>
+                            <div class="room-features">
+                                <span><i data-feather="users"></i> 7 Guests</span>
+                                <span><i data-feather="maximize-2"></i> 85m²</span>
+                                <span><i data-feather="wifi"></i> Free WiFi</span>
+                            </div>
+                            <div class="room-price">
+                                <span class="price">$249</span>
+                                <span class="per-night">/ night</span>
+                            </div>
+                            <button class="btn btn-outline">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
+        <section class="featured-rooms">
+            <div class="container">
+                <h2 class="section-title">Nature Retreats</h2>
+                <div class="rooms-grid">
+                    <div class="room-card">
+                        <div class="room-image" style="background-image: url('/images/Nihi_image.jpg');"></div>
+                        <div class="room-details">
+                            <h3>Indoneasian Nihi resort</h3>
+                            <div class="room-features">
+                                <span><i data-feather="users"></i> 3 Guests</span>
+                                <span><i data-feather="maximize-2"></i> 45m²</span>
+                                <span><i data-feather="wifi"></i> Free WiFi</span>
+                            </div>
+                            <div class="room-price">
+                                <span class="price">$169</span>
+                                <span class="per-night">/ night</span>
+                            </div>
+                            <button class="btn btn-outline">View Details</button>
+                        </div>
+                    </div>
+                    
+                    <div class="room-card">
+                        <div class="room-image" style="background-image: url('/images/Bambu_image.jpg');"></div>
+                        <div class="room-details">
+                            <h3>Bambu Idah Resort</h3>
+                            <div class="room-features">
+                                <span><i data-feather="users"></i> 4 Guests</span>
+                                <span><i data-feather="maximize-2"></i> 50m²</span>
+                                <span><i data-feather="wifi"></i> Free WiFi</span>
+                            </div>
+                            <div class="room-price">
+                                <span class="price">219</span>
+                                <span class="per-night">/ night</span>
+                            </div>
+                            <button class="btn btn-outline">View Details</button>
+                        </div>
+                    </div>
+                    
+                    <div class="room-card">
+                        <div class="room-image" style="background-image: url('/images/El_silencio_image.jpg');"></div>
+                        <div class="room-details">
+                            <h3>Costa Rican Escape</h3>
+                            <div class="room-features">
+                                <span><i data-feather="users"></i> 7 Guests</span>
+                                <span><i data-feather="maximize-2"></i> 85m²</span>
+                                <span><i data-feather="wifi"></i> Free WiFi</span>
+                            </div>
+                            <div class="room-price">
+                                <span class="price">$249</span>
+                                <span class="per-night">/ night</span>
+                            </div>
+                            <button class="btn btn-outline">View Details</button>
+                        </div>
+                    </div>
+                    <div class="room-card">
+                        <div class="room-image" style="background-image: url('../images/Soneva_Kiri_image.jpg');"></div>
+                        <div class="room-details">
+                            <h3>Thailand Lodge</h3>
+                            <div class="room-features">
+                                <span><i data-feather="users"></i> 7 Guests</span>
+                                <span><i data-feather="maximize-2"></i> 85m²</span>
+                                <span><i data-feather="wifi"></i> Free WiFi</span>
+                            </div>
+                            <div class="room-price">
+                                <span class="price">$249</span>
+                                <span class="per-night">/ night</span>
+                            </div>
+                            <button class="btn btn-outline">View Details</button>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
         <section class="hotel-categories">
         <section class="amenities">
             <div class="container">
@@ -265,50 +351,13 @@
                 </div>
             </div>
         </section>
-    <footer class="footer">
-    <div class="container footer-grid">
-        <div class="footer-about">
-            <h3>Nomado</h3>
-            <p>Your gateway to luxury, comfort, and unforgettable stays. Discover curated accommodations in the world’s most desirable destinations.</p>
-        </div>
 
-        <div class="footer-links">
-            <h4>Quick Links</h4>
-            <ul>
-                <li><a href="Home.html">Home</a></li>
-                <li><a href="deals.html">Deals</a></li>
-                <li><a href="About_Us.html">About us</a></li>
-            </ul>
-        </div>
-
-        <div class="footer-contact">
-            <h4>Contact Us</h4>
-            <ul>
-                <li><i data-feather="map-pin"></i> 123 Ocean View Blvd, Miami, FL</li>
-                <li><i data-feather="phone"></i> +1 (305) 555-7890</li>
-                <li><i data-feather="mail"></i> info@nomado.com</li>
-            </ul>
-        </div>
-
-        <div class="footer-social">
-            <h4>Follow Us</h4>
-            <div class="social-icons">
-                <a href="#"><i data-feather="facebook"></i></a>
-                <a href="#"><i data-feather="instagram"></i></a>
-                <a href="#"><i data-feather="twitter"></i></a>
-                <a href="#"><i data-feather="linkedin"></i></a>
-            </div>
-        </div>
-    </div>
-
-    <div class="footer-bottom">
-        <p>&copy; 2025 Nomado. All rights reserved.</p>
-    </div>
-</footer>
+    <?php include __DIR__ . '/../templates/footer.php' ?>
 
     <script>
         feather.replace();
     </script>
     <script src="components/footer.js"></script>
+    
 </body>
 </html>
