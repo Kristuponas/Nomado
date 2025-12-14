@@ -1,6 +1,6 @@
 <?php
-require_once("functions.php");
-require_once("database/database.php");
+require_once(__DIR__ . "/../functions.php");
+require_once(__DIR__ . "/../database/database.php");
 
 
 $_SESSION['name_error'] = "";

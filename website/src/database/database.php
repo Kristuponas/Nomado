@@ -215,4 +215,20 @@ class Database
         return $stmt->execute();
     }
 
+    public function query(string $sql, array $params = [])
+    {
+       $stmt = $this->dbHandler->prepare($sql);
+
+        foreach ($params as $key => $value) {
+            $stmt->bindValue(
+                is_int($key) ? $key + 1 : ':' . ltrim($key, ':'),
+                $value,
+                is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR
+            );
+        }
+
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
 }
