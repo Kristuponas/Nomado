@@ -70,7 +70,7 @@
     line-height: 1.3;
 }
 
-.hotel-details {
+.hotel-description {
     font-family: 'Poppins', sans-serif;
     max-width: 900px;
     margin: 0 auto;
@@ -79,17 +79,17 @@
     text-align: justify;
 }
 
-.hotel-details h1 { font-size: 2.25rem; margin: 1.5em 0 0.75em; }
-.hotel-details h2 { font-size: 2rem;    margin: 1.5em 0 0.75em; }
-.hotel-details h3 { font-size: 1.75rem; margin: 1.5em 0 0.75em; }
-.hotel-details h4 { font-size: 1.5rem;  margin: 1.5em 0 0.75em; }
+.hotel-description h1 { font-size: 2.25rem; margin: 1.5em 0 0.75em; }
+.hotel-description h2 { font-size: 2rem;    margin: 1.5em 0 0.75em; }
+.hotel-description h3 { font-size: 1.75rem; margin: 1.5em 0 0.75em; }
+.hotel-description h4 { font-size: 1.5rem;  margin: 1.5em 0 0.75em; }
 
-.hotel-details p {
+.hotel-description p {
     font-size: 1.125rem;
     margin: 1em 0;
 }
 
-.hotel-details ul {
+.hotel-description ul {
     font-size: 1.125rem;
     margin: 1em 0;
     padding-left: 2em;
@@ -97,7 +97,7 @@
     text-align: justify;
 }
 
-.hotel-details ol {
+.hotel-description ol {
     font-size: 1.125rem;
     margin: 1em 0;
     padding-left: 2em;
@@ -105,15 +105,15 @@
     text-align: justify;
 }
 
-.hotel-details li {
+.hotel-description li {
     margin: 0.5em 0;
 }
 
 
-.hotel-details strong { font-weight: 600; }
-.hotel-details em { font-style: italic; }
+.hotel-description strong { font-weight: 600; }
+.hotel-description em { font-style: italic; }
 
-.hotel-details img {
+.hotel-description img {
     max-width: 100%;
     height: auto;
     display: block;

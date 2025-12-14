@@ -19,7 +19,7 @@ try {
     $hotel = $db->select('viesbutis', ['id' => $_GET['hotel_id']])[0];
     $location = $db->select('vietove', ['id' => $hotel['fk_Vietove']])[0];
     $address = $location['adresas'] . ', ' . $location['miestas'] . ', ' . $location['salis'];
-    $coords = geocodeAddress($address);
+    /* $coords = geocodeAddress($address); */
 } catch (Exception $e) {
     die($e->getMessage());
 }
@@ -41,7 +41,8 @@ try {
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap"
         rel="stylesheet">
-    <script async src="https://maps.googleapis.com/maps/api/js?key=<?= $_ENV['GOOGLE_MAPS_API_KEY'] ?>&loading=async&libraries=maps,marker"></script>
+    <!-- <script async src="https://maps.googleapis.com/maps/api/js?key=<?= $_ENV['GOOGLE_MAPS_API_KEY'] ?>&loading=async&libraries=maps,marker"></script> -->
+    <script src="js/comments.js" defer></script>
 </head>
 
 <body>
@@ -117,7 +118,7 @@ try {
             </div>
         </div>
 
-        <div class="hotel-details">
+        <div class="hotel-description">
 	    <?= $converter->convert($hotel['aprasymas'])->getContent() ?>
         </div>
 
@@ -136,47 +137,11 @@ try {
         <section class="testimonials">
             <div class="container">
                 <h2 class="section-title">What Our Guests Say</h2>
-                <div class="testimonial-slider">
-                    <div class="testimonial-card">
-                        <div class="testimonial-content">
-                            <div class="rating">
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star" class="filled"></i>
-                            </div>
-                            <p>"The service was impeccable and the room was even better than the photos. Will definitely be returning!"</p>
-                            <div class="guest-info">
-                                <div class="guest-avatar" style="background-image: url('http://static.photos/people/100x100/1');"></div>
-                                <div>
-                                    <h4>Sarah Johnson</h4>
-                                    <p>New York, USA</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="testimonial-card">
-                        <div class="testimonial-content">
-                            <div class="rating">
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star"></i>
-                            </div>
-                            <p>"The location was perfect and the staff went above and beyond to make our stay memorable."</p>
-                            <div class="guest-info">
-                                <div class="guest-avatar" style="background-image: url('http://static.photos/people/100x100/2');"></div>
-                                <div>
-                                    <h4>Michael Chen</h4>
-                                    <p>Toronto, Canada</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div id="comment-container" class="container">
                 </div>
+		<form id="comment-management">
+		    <button id="page-forward-button">next comments</button>
+		</form>
             </div>
         </section>
         <!-- Fullscreen Modal (hidden by default) -->
@@ -192,7 +157,6 @@ try {
     <script>
         feather.replace();
     </script>
-    <script src="components/footer.js"></script>
 
     <script>
         // Slider functionality (same as before)
@@ -235,5 +199,4 @@ try {
         });
     </script>
 </body>
-
 </html>

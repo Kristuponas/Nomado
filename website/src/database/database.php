@@ -39,8 +39,14 @@ class Database
         return self::$instance;
     }
 
-    public function select($table, $conditions = [], $columns = '*')
-    {
+
+    public function select(
+        string $table,
+        array $conditions = [],
+        $columns = '*',
+        ?int $limit = null,
+        ?int $offset = null
+    ) {
         if (is_array($columns)) {
             $columns = implode(', ', array_map(fn ($col) => "`$col`", $columns));
         }
@@ -61,6 +67,14 @@ class Database
             $sql .= " WHERE " . implode(' AND ', $whereClauses);
         }
 
+        if ($limit !== null) {
+            $sql .= " LIMIT :limit";
+
+            if ($offset !== null) {
+                $sql .= " OFFSET :offset";
+            }
+        }
+
         $stmt = $this->dbHandler->prepare($sql);
 
         foreach ($conditions as $field => $value) {
@@ -69,9 +83,18 @@ class Database
             }
         }
 
+        if ($limit !== null) {
+            $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        }
+
+        if ($offset !== null) {
+            $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        }
+
         $stmt->execute();
         return $stmt->fetchAll();
     }
+
 
     public function insert($table, $data)
     {
