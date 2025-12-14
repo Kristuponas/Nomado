@@ -39,6 +39,11 @@ class Database
         return self::$instance;
     }
 
+    public function getHandler()
+    {
+        return $this->dbHandler;
+    }
+
     public function select($table, $conditions = [], $columns = '*')
     {
         if (is_array($columns)) {

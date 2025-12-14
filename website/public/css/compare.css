@@ -1,0 +1,399 @@
+/* Compare Hotels Page */
+.compare-page {
+    padding: 40px 0;
+    min-height: calc(100vh - 200px);
+    background-color: #f8f9fa;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.page-header h1 {
+    margin: 0;
+    color: #212529;
+    font-size: 2.2rem;
+    font-weight: 600;
+}
+
+.page-header .btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+/* Comparison Table Container */
+.comparison-table-container {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+    margin-bottom: 40px;
+}
+
+/* Comparison Table */
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+/* Table Header */
+.comparison-table thead {
+    background: linear-gradient(135deg, #1e88e5 0%, #0d47a1 100%);
+}
+
+.comparison-table thead th {
+    padding: 25px 20px;
+    text-align: center;
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+    position: relative;
+}
+
+.comparison-table thead th.feature-column {
+    background: #0d3c7c;
+    text-align: left;
+}
+
+.comparison-table thead th.hotel-column {
+    vertical-align: top;
+}
+
+/* Hotel Header in Table */
+.hotel-header {
+    text-align: center;
+    padding: 0 10px;
+}
+
+.hotel-image {
+    width: 180px;
+    height: 120px;
+    margin: 0 auto 15px;
+    border-radius: 10px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.hotel-image:hover {
+    transform: scale(1.03);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.hotel-header h3 {
+    margin: 0;
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+/* Table Body */
+.comparison-table tbody tr {
+    border-bottom: 1px solid #f1f3f5;
+    transition: background-color 0.2s ease;
+}
+
+.comparison-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.comparison-table tbody tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+
+.comparison-table tbody tr:nth-child(even):hover {
+    background-color: #eef2f7;
+}
+
+/* Table Cells */
+.comparison-table td {
+    padding: 20px;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 1rem;
+    color: #495057;
+}
+
+.comparison-table td.feature-column {
+    background-color: #f8f9fa;
+    text-align: left;
+    font-weight: 600;
+    color: #343a40;
+    border-right: 1px solid #e9ecef;
+    width: 220px;
+    position: relative;
+}
+
+/* Feature Name with Icon */
+.feature-name {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #495057;
+    font-weight: 500;
+}
+
+.feature-name i {
+    color: #1e88e5;
+    width: 20px;
+    height: 20px;
+    stroke-width: 2px;
+}
+
+/* Price Cell */
+.price-cell {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1e88e5;
+    text-align: center;
+}
+
+.price-cell::before {
+    content: "$";
+    font-size: 1.2rem;
+    vertical-align: top;
+    margin-right: 2px;
+}
+
+/* Rating Badge */
+.rating-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+    color: #212529;
+    padding: 8px 18px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    box-shadow: 0 3px 10px rgba(255, 193, 7, 0.2);
+}
+
+.rating-badge i {
+    color: #212529;
+    width: 18px;
+    height: 18px;
+    stroke-width: 3px;
+}
+
+/* Description Cell */
+.description-cell {
+    max-width: 350px;
+    line-height: 1.6;
+    color: #6c757d;
+    text-align: left;
+    padding: 20px 25px;
+    font-size: 0.95rem;
+}
+
+/* Tags/Amenities */
+.tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    min-height: 60px;
+}
+
+.tag-badge {
+    background: #e3f2fd;
+    color: #1e88e5;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.tag-badge:hover {
+    background: #1e88e5;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(30, 136, 229, 0.2);
+}
+
+/* Action Buttons */
+.comparison-table tbody tr:last-child td {
+    background-color: #f8fafc;
+    border-bottom: none;
+}
+
+.comparison-table tbody tr:last-child .feature-column {
+    background-color: #e9ecef;
+    font-weight: 600;
+    color: #343a40;
+}
+
+.comparison-table tbody tr:last-child td:not(.feature-column) {
+    padding: 25px 20px;
+}
+
+.comparison-table tbody tr:last-child form {
+    display: flex;
+    justify-content: center;
+}
+
+.comparison-table tbody tr:last-child .btn {
+    min-width: 180px;
+    padding: 12px 25px;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.comparison-table tbody tr:last-child .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(30, 136, 229, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .comparison-table-container {
+        overflow-x: auto;
+    }
+
+    .comparison-table {
+        min-width: 900px;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .page-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .page-header .btn {
+        align-self: stretch;
+        justify-content: center;
+    }
+
+    .comparison-table td,
+    .comparison-table th {
+        padding: 15px 12px;
+    }
+
+    .hotel-image {
+        width: 140px;
+        height: 100px;
+    }
+
+    .hotel-header h3 {
+        font-size: 1.1rem;
+    }
+
+    .price-cell {
+        font-size: 1.5rem;
+    }
+
+    .rating-badge {
+        padding: 6px 14px;
+        font-size: 1rem;
+    }
+
+    .description-cell {
+        max-width: 250px;
+        padding: 15px 18px;
+        font-size: 0.9rem;
+    }
+
+    .tag-badge {
+        padding: 5px 12px;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .compare-page {
+        padding: 20px 0;
+    }
+
+    .comparison-table-container {
+        border-radius: 8px;
+        margin: 0 -15px;
+        width: calc(100% + 30px);
+    }
+
+    .comparison-table td.feature-column {
+        width: 180px;
+    }
+
+    .hotel-image {
+        width: 120px;
+        height: 80px;
+    }
+
+    .feature-name {
+        font-size: 0.9rem;
+    }
+
+    .feature-name i {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+/* Scrollbar styling for table container */
+.comparison-table-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.comparison-table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.comparison-table-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.comparison-table-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Animation for table rows */
+@keyframes fadeInRow {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.comparison-table tbody tr {
+    animation: fadeInRow 0.3s ease forwards;
+}
+
+.comparison-table tbody tr:nth-child(1) { animation-delay: 0.1s; }
+.comparison-table tbody tr:nth-child(2) { animation-delay: 0.2s; }
+.comparison-table tbody tr:nth-child(3) { animation-delay: 0.3s; }
+.comparison-table tbody tr:nth-child(4) { animation-delay: 0.4s; }
+.comparison-table tbody tr:nth-child(5) { animation-delay: 0.5s; }
+.comparison-table tbody tr:nth-child(6) { animation-delay: 0.6s; }
+.comparison-table tbody tr:nth-child(7) { animation-delay: 0.7s; }
+.comparison-table tbody tr:nth-child(8) { animation-delay: 0.8s; }

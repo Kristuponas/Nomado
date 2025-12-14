@@ -39,6 +39,8 @@ if(!empty($viewedHotels)) {
         $recommendedHotels = $stmt->fetchAll();
     }
 }
+
+$locations = $db->select('vietove', [], '*');
 ?>
 
 <!DOCTYPE html>
@@ -63,6 +65,46 @@ if(!empty($viewedHotels)) {
         </div>
     </section>
 
+    <!-- Search Form -->
+    <section class="search-section">
+        <div class="container">
+            <form action="search_results.php" method="GET" class="search-box" id="searchForm">
+                <div class="search-field">
+                    <i data-feather="map-pin"></i>
+                    <input type="text"
+                           name="search_query"
+                           id="searchQuery"
+                           placeholder="Enter city, country or hotel name"
+                           autocomplete="off">
+                    <button type="button" class="clear-btn" onclick="clearSearchInput()">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+
+                <div class="search-field">
+                    <i data-feather="calendar"></i>
+                    <input type="date" name="check_in" placeholder="Check-in" id="checkIn">
+                </div>
+
+                <div class="search-field">
+                    <i data-feather="calendar"></i>
+                    <input type="date" name="check_out" placeholder="Check-out" id="checkOut">
+                </div>
+
+                <div class="search-field">
+                    <i data-feather="users"></i>
+                    <input type="number" name="guests" placeholder="Guests" min="1" value="2">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-search">
+                    <i data-feather="search"></i>
+                    Search Hotels
+                </button>
+            </form>
+        </div>
+    </section>
+
+
     <!-- Featured Rooms -->
     <section class="featured-rooms">
         <div class="container">
@@ -70,11 +112,11 @@ if(!empty($viewedHotels)) {
             <div class="rooms-grid">
                 <?php foreach($featuredHotels as $hotel): ?>
                     <?php
-                        $imageName = str_replace(' ', '_', $hotel['pavadinimas']);
-                        $imagePath = "images/{$imageName}.jpg";
-                        if (!file_exists($imagePath)) {
-                            $imagePath = "images/{$imageName}.jpeg";
-                        }
+                    $imageName = str_replace(' ', '_', $hotel['pavadinimas']);
+                    $imagePath = "images/{$imageName}.jpg";
+                    if (!file_exists($imagePath)) {
+                        $imagePath = "images/{$imageName}.jpeg";
+                    }
                     ?>
                     <div class="room-card">
                         <div class="room-image" style="background-image: url('<?php echo $imagePath; ?>');"></div>
@@ -107,11 +149,11 @@ if(!empty($viewedHotels)) {
             <div class="rooms-grid">
                 <?php foreach($seasonalDeals as $hotel): ?>
                     <?php
-                        $imageName = str_replace(' ', '_', $hotel['pavadinimas']);
-                        $imagePath = "images/{$imageName}.jpg";
-                        if (!file_exists($imagePath)) {
-                            $imagePath = "images/{$imageName}.jpeg";
-                        }
+                    $imageName = str_replace(' ', '_', $hotel['pavadinimas']);
+                    $imagePath = "images/{$imageName}.jpg";
+                    if (!file_exists($imagePath)) {
+                        $imagePath = "images/{$imageName}.jpeg";
+                    }
                     ?>
                     <div class="room-card">
                         <div class="room-image" style="background-image: url('<?php echo $imagePath; ?>');"></div>
@@ -145,11 +187,11 @@ if(!empty($viewedHotels)) {
                 <div class="rooms-grid">
                     <?php foreach($recommendedHotels as $hotel): ?>
                         <?php
-                            $imageName = str_replace(' ', '_', $hotel['pavadinimas']);
-                            $imagePath = "Images/{$imageName}.jpg";
-                            if (!file_exists($imagePath)) {
-                                $imagePath = "Images/{$imageName}.jpeg";
-                            }
+                        $imageName = str_replace(' ', '_', $hotel['pavadinimas']);
+                        $imagePath = "Images/{$imageName}.jpg";
+                        if (!file_exists($imagePath)) {
+                            $imagePath = "Images/{$imageName}.jpeg";
+                        }
                         ?>
                         <div class="room-card">
                             <div class="room-image" style="background-image: url('<?php echo $imagePath; ?>');"></div>
@@ -182,6 +224,9 @@ if(!empty($viewedHotels)) {
 
 <script>
     feather.replace();
+    function clearSearchInput() {
+        document.getElementById('searchQuery').value = '';
+    }
 </script>
 <script src="components/footer.js"></script>
 

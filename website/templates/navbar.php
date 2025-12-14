@@ -8,6 +8,9 @@
 	    <ul>
                 <li><a href="/">Home</a></li>
                 <li><a href="/deals.php">Deals</a></li>
+                <li><a href="favorites.php">Favorites</a></li>
+
+
                 <li><a href="/about_us.php">About us</a></li>
             </ul>
             </nav>

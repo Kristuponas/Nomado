@@ -180,19 +180,42 @@ img {
 .search-box {
     background-color: white;
     border-radius: var(--border-radius);
-    padding: 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
+    padding: 15px;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
     box-shadow: var(--box-shadow);
+    margin-top: 20px;
+    position: relative;
+    z-index: 100;
+    width: 100%;
+    align-items: stretch;
+    max-width: 900px;
+}
+
+.search-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+    background-color: var(--light-color);
+}
+
+.search-section .container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
 .search-field {
+    position: relative;
     display: flex;
     align-items: center;
     background-color: var(--light-gray);
     border-radius: var(--border-radius);
-    padding: 10px 15px;
+    padding: 8px 12px;
+    flex: 1;
+    min-width: 0;
 }
 
 .search-field i {
@@ -204,7 +227,8 @@ img {
     border: none;
     background: transparent;
     width: 100%;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    min-width: 0;
 }
 
 .search-field input::placeholder {
@@ -356,6 +380,8 @@ img {
     color: #bbb;
     font-size: 0.9rem;
 }
+
+
 
 
 
