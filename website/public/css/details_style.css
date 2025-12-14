@@ -135,11 +135,10 @@ h2{
     text-align: center;
 }
 .map{
-    width: 80%;       /* užima 80% konteinerio pločio */
-    max-width: 600px; /* bet ne didesnė nei 600px */
-    height: auto;     /* išlaiko proporcijas */
-    display: block;
-    margin: 0 auto;
+    width: 80%;
+    max-width: 800px; /* bet ne didesnė nei 600px */
+    height: 400px;     /* išlaiko proporcijas */
+    margin: 100px auto;
 }
 .image-slider {
   position: relative;

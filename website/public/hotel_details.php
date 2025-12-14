@@ -121,17 +121,18 @@ try {
 	    <?= $converter->convert($hotel['aprasymas'])->getContent() ?>
         </div>
 
-        <div class="map-picture">
-        <gmp-map
-	    center="<?= $coords['lat'] ?>, <?= $coords['lng'] ?>"
-            zoom="10"
-	    map-id="DEMO_MAP_ID"
-	    style="height: 500px">
+        <div class="map">
+	    <gmp-map
+		center="<?= $coords['lat'] ?>, <?= $coords['lng'] ?>"
+		zoom="17"
+		map-id="DEMO_MAP_ID">
 	    <gmp-advanced-marker
-		 position="<?= $coords['lat'] ?>,<?= $coords['lng'] ?>">
-	    </gmp-advanced-marker>
-        </gmp-map>
+		position="<?= $coords['lat'] ?>, <?= $coords['lng'] ?>"
+		title="<?= $hotel['pavadinimas'] ?>"
+		gmp-clickable></gmp-advanced-marker>
+	    </gmp-map>
         </div>
+
         <section class="testimonials">
             <div class="container">
                 <h2 class="section-title">What Our Guests Say</h2>
