@@ -7,7 +7,7 @@ $db = Database::getInstance();
 $currSeason = 'ziema';
 
 // ----- Featured Rooms: 3 random hotels -----
-$featuredHotels = $db->select('viesbutis', [], '*');
+$featuredHotels = $db->select('viesbutis', []);
 shuffle($featuredHotels);
 $featuredHotels = array_slice($featuredHotels, 0, 3);
 
@@ -47,7 +47,7 @@ if(!empty($viewedHotels)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nomado - Luxury Hotel Booking</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <script src="https://unpkg.com/feather-icons"></script>
 </head>
@@ -90,7 +90,7 @@ if(!empty($viewedHotels)) {
                                 <span class="per-night">/ night</span>
                             </div>
                             <form action="hotel_details.php" method="GET">
-                                <input type="hidden" name="id" value="<?php echo $hotel['id']; ?>">
+                                <input type="hidden" name="hotel_id" value="<?php echo $hotel['id']; ?>">
                                 <button type="submit" class="btn btn-outline">View Details</button>
                             </form>
                         </div>
@@ -127,7 +127,7 @@ if(!empty($viewedHotels)) {
                                 <span class="per-night">/ night</span>
                             </div>
                             <form action="hotel_details.php" method="GET">
-                                <input type="hidden" name="id" value="<?php echo $hotel['id']; ?>">
+                                <input type="hidden" name="hotel_id" value="<?php echo $hotel['id']; ?>">
                                 <button type="submit" class="btn btn-outline">View Details</button>
                             </form>
                         </div>
@@ -165,7 +165,7 @@ if(!empty($viewedHotels)) {
                                     <span class="per-night">/ night</span>
                                 </div>
                                 <form action="hotel_details.php" method="GET">
-                                    <input type="hidden" name="id" value="<?php echo $hotel['id']; ?>">
+                                    <input type="hidden" name="hotel_id" value="<?php echo $hotel['id']; ?>">
                                     <button type="submit" class="btn btn-outline">View Details</button>
                                 </form>
                             </div>

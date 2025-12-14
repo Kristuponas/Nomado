@@ -20,7 +20,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             require __DIR__ . '/../src/auth/proclogin.php';
             break;
     }
-
 }
 ?>
 <html>
@@ -113,5 +112,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
 </body>
-
 </html>

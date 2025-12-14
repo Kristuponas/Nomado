@@ -27,7 +27,7 @@ $user
 
 
     <!--<link rel="stylesheet" href="../CSSStyles/style.css">-->
-    <link rel="stylesheet" href="../CSSStyles/EditProfile.css">
+    <link rel="stylesheet" href="css/style.css">
 
     <script>
         function openModal(field, label, value) {

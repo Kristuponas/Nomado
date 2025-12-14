@@ -1,3 +1,30 @@
+<?php
+session_start();
+
+require_once __DIR__ . '/../src/database/database.php';
+require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../src/hotel_details/geocode.php';
+
+use League\CommonMark\CommonMarkConverter;
+
+$converter = new CommonMarkConverter(['html_input' => 'strip', 'max_nesting_level' => 5]);
+
+$db = Database::getInstance();
+
+if (!isset($_GET['hotel_id'])) {
+    header("Location: /");
+}
+
+try {
+    $hotel = $db->select('viesbutis', ['id' => $_GET['hotel_id']])[0];
+    $location = $db->select('vietove', ['id' => $hotel['fk_Vietove']])[0];
+    $address = $location['adresas'] . ', ' . $location['miestas'] . ', ' . $location['salis'];
+    $coords = geocodeAddress($address);
+} catch (Exception $e) {
+    die($e->getMessage());
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,6 +32,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nomado - Luxury Hotel Booking</title>
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/details_style.css">
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <script src="https://unpkg.com/feather-icons"></script>
@@ -13,6 +41,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap"
         rel="stylesheet">
+    <script async src="https://maps.googleapis.com/maps/api/js?key=<?= $_ENV['GOOGLE_MAPS_API_KEY'] ?>&loading=async&libraries=maps,marker"></script>
 </head>
 
 <body>
@@ -20,6 +49,10 @@
 <?php include __DIR__ . '/../templates/navbar.php' ?>
 
     <main>
+	<div class="container">
+	<h2 class="hotel-name"><?= $hotel['pavadinimas'] ?></h2>
+	</div>
+
         <!-- Image Slider -->
         <section class="image-slider">
             <div class="slider-container">
@@ -36,6 +69,7 @@
                 <button class="next">&#10095;</button>
             </div>
         </section>
+
         <div class ="details">
             <div class = "row">
                 <div class="row-content">
@@ -82,18 +116,21 @@
                 </div>
             </div>
         </div>
-        <div class="hotel-details">
-            <h4>About hotel</h4>
-            <p>Hotel Danieli is a world-famous five-star hotel in Venice, Italy, known for its luxury, elegance, and history. Overlooking the Venetian Lagoon, it combines centuries-old architecture with modern comfort, offering guests an unforgettable stay.</p>
-            <h4>Location</h4>
-            <p>Located on Riva degli Schiavoni, just steps from St. Mark’s Square and the Doge’s Palace, the hotel offers stunning lagoon views. It’s easily reached by private water taxi or public transport from Venice Marco Polo Airport.</p>
-            <h4>Dining</h4>
-            <p>The hotel’s rooftop restaurant, Terrazza Danieli, serves Venetian and international cuisine with panoramic views of the lagoon. It’s a perfect spot for fine dining, cocktails, and sunset views.</p>
-        </div>
-        <div class="map-picture">
 
-            <h2 class="location">Location</h2>
-            <img src ="images/map.jpg" class="map">
+        <div class="hotel-details">
+	    <?= $converter->convert($hotel['aprasymas'])->getContent() ?>
+        </div>
+
+        <div class="map-picture">
+        <gmp-map
+	    center="<?= $coords['lat'] ?>, <?= $coords['lng'] ?>"
+            zoom="10"
+	    map-id="DEMO_MAP_ID"
+	    style="height: 500px">
+	    <gmp-advanced-marker
+		 position="<?= $coords['lat'] ?>,<?= $coords['lng'] ?>">
+	    </gmp-advanced-marker>
+        </gmp-map>
         </div>
         <section class="testimonials">
             <div class="container">

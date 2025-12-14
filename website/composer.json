@@ -1,0 +1,7 @@
+{
+    "require": {
+        "league/commonmark": "2.8.*",
+	"yidas/google-maps-services": "1.2.*",
+	"vlucas/phpdotenv": "5.6.*"
+    }
+}
