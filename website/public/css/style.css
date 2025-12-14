@@ -381,6 +381,59 @@ img {
     font-size: 0.9rem;
 }
 
+.slider-wrapper {
+    position: relative;
+    margin: 2rem 0;
+}
+
+.rooms-slider-container {
+    overflow: hidden; /* only show 3 cards at a time */
+}
+
+.rooms-slider {
+    display: flex;
+    gap: 20px;
+    transition: transform 0.3s ease;
+}
+
+.room-card {
+    flex: 0 0 calc((100% - 40px)/3);
+}
+
+.slider-arrow {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(0,0,0,0.5);
+    color: #fff;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    transition: background-color 0.2s;
+}
+
+.slider-arrow:hover {
+    background-color: rgba(0,0,0,0.8);
+}
+
+
+.slider-arrow.prev {
+    left: -20px;
+}
+
+.slider-arrow.next {
+    right: -20px;
+}
+
+
+
 
 
 

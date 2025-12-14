@@ -11,8 +11,30 @@ $converter = new CommonMarkConverter(['html_input' => 'strip', 'max_nesting_leve
 
 $db = Database::getInstance();
 
+$viewedTagsQueue = $_SESSION['viewed_tags_queue'] ?? [];
+$viewedHotels = $_SESSION['viewed_hotels'] ?? [];
+
+function pushTagQueue(&$queue, $tagId, $maxSize = 10) {
+    $queue[] = $tagId;
+    if (count($queue) > $maxSize) {
+        array_shift($queue);
+    }
+}
+
 if (!isset($_GET['hotel_id'])) {
     header("Location: /");
+} else {
+    $hotelId = (int)$_GET['hotel_id'];
+
+    $viewedHotels[] = $hotelId;
+    $viewedHotels = array_unique($viewedHotels);
+    $_SESSION['viewed_hotels'] = $viewedHotels;
+
+    $hotelTags = $db->select('viesbutis_tag', ['fk_Viesbutis' => $hotelId]);
+    foreach ($hotelTags as $tag) {
+        pushTagQueue($viewedTagsQueue, $tag['fk_Tag'], 10);
+    }
+    $_SESSION['viewed_tags_queue'] = $viewedTagsQueue;
 }
 
 try {
