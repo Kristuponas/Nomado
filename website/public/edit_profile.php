@@ -1,21 +1,27 @@
 <?php
 session_start();
 require_once __DIR__ . '/../src/database/database.php';
-require_once __DIR__ . '/../src/properties/nustatymai.php';
 
-include("../src/Properties/meniu.php");
+require __DIR__ . '/../templates/navbar.php';
 
-if (!isset($_SESSION['userid'])) {
+if (!isset($_SESSION['user_id'])) {
     header("Location: Login.php");
     exit;
 }
 
 $db = Database::getInstance();
-$userid = $_SESSION['userid'];
+$userid = $_SESSION['user_id'];
 
 $user = $db->select('vartotojas', ['id' => $userid])[0];
 $passLength = strlen($user['slaptazodis']);
-$user
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    switch ($_POST['action']) {
+        case 'save':
+            require_once __DIR__ . '/../src/user_edit/useredit_update.php';
+            break;
+        }
+    }
     ?>
 <!DOCTYPE html>
 <html>
@@ -27,7 +33,7 @@ $user
 
 
     <!--<link rel="stylesheet" href="../CSSStyles/style.css">-->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/edit_profile.css">
 
     <script>
         function openModal(field, label, value) {
@@ -92,10 +98,13 @@ $user
         <div class="profile-row">
             <span class="label">Password</span>
             <span>**************</span>
-            <button class="edit-btn" onclick="openModal('password','Password','')">
+            <button class="edit-btn" onclick="document.getElementById('password_Modal').style.display='block'">
                 Edit
             </button>
         </div>
+    </div>
+    <div class="TFA">
+        <button onclick="window.location.href='enable_2fa.php'">Enable Two-Factor Authentication</button>
     </div>
 
     <!-- MODAL -->
@@ -103,10 +112,11 @@ $user
         <div class="modal-content">
             <h3 class="display_name" id="modal-label"></h3>
 
-            <form method="POST" action="../src/useredit_update.php">
+            <form method="POST" action="<?= $_SERVER['PHP_SELF'] ?>">
+                <input type="hidden" name="action" value="save">
                 <input  type="hidden" name="field" id="field">
 
-                <p>Current password</p>    
+                    
                 <input class="input_field" type="text" name="value" id="modal-input" style="width:100%" required>
 
                 <br><br>
@@ -114,6 +124,28 @@ $user
                 <button class="update_btn_cancle" type="button" onclick="closeModal()">Cancel</button>
             </form>
         </div>
+    </div>
+    <div id="password_Modal" class="modal">
+        <div class="modal-content">
+            <h2 class="display_name">Change pasword</h2>
+            <p><?= $_SESSION['message'] ?? ''?></p>
+            <form method="POST" action="<?= $_SERVER['PHP_SELF'] ?>">
+                <input type="hidden" name="action" value="save">
+                <input type="hidden" name="field" value="password">
+                
+                <label class="display_name" for="current_password">Current Password</label>
+                <input  class="input_field" type="password" id="current_password" name="current_password"required>
+                <br>
+                <label class="display_name" for="new_password">New Password</label>
+                <input class="input_field" type="password" id="new_password" name="new_password" required>
+
+                <br><br>
+                <button class="update_btn" type="submit">Save</button>
+                <button class="update_btn_cancle" type="button" onclick="document.getElementById('password_Modal').style.display='none'">Cancel</button>
+
+            </form> 
+        </div>
+
     </div>
 
 </body>

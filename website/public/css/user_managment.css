@@ -1,0 +1,173 @@
+/* Bendrieji stiliai */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    padding-top:150px;
+}
+
+h1 {
+    text-align: left;
+    padding-left: 20%;
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* Lentelės stilius */
+table {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+thead {
+    background-color: #3a86ff;
+    color: #fff;
+}
+
+thead th {
+    padding: 12px;
+    text-align: left;
+}
+
+tbody td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+tbody tr:hover {
+    background-color: #f0f8ff;
+}
+
+/* Mygtukai */
+button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+button.edit-btn {
+    background-color: #a9a9ac;
+    color: rgb(255, 255, 255);
+}
+
+button.edit-btn:hover {
+    background-color: #7a787e;
+}
+
+/* Modal stilius */
+.modal {
+    position: fixed;         /* fixed, kad overlay liktų virš viso puslapio */
+    top: 0;
+    left: 0;
+    width: 100vw;            /* pilnas fonas */
+    height: 100vh;
+    background: rgba(0,0,0,0.2); /* lengvai permatomas fonas */
+    display: none;          /* kad būtų matomas */
+    z-index: 1000;
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    width: 400px;   /* tavo norimas plotis */
+    max-width: 90%;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    padding: 10px
+}
+
+
+/* Paprasta animacija, kad modal švelniai atsirastų */
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+button.danger {
+    background: #c0392b;
+    color: white;
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h5 {
+    margin: 0;
+}
+
+.close-btn {
+    background-color: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.form-label {
+    font-weight: bold;
+}
+
+.text-end {
+    text-align: right;
+}
+
+.update_btn {
+    background-color: #3a86ff;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+.update_btn:hover {
+    background-color: #2a75e6;
+}
+
+.update_btn_cancle {
+    background-color: #ccc;
+    color: #333;
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+.update_btn_cancle:hover {
+    background-color: #999;
+}
+.edit-btn {
+    background: transparent;
+    border: none;
+    color: #3d3d3d;
+    cursor: pointer;
+}
+
+
+
+

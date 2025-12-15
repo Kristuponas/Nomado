@@ -1,0 +1,89 @@
+.profile-row{
+    margin-top: 80px;
+    width: 70%;
+    display: grid;
+    grid-template-columns: 150px 1fr 80px;
+    padding: 12px 0;
+    border-bottom: 1px solid;
+    padding-left: 120px;
+    margin: 0 auto;
+    padding-top:70px;
+}
+
+.label {font-weight: bold;}
+.edit-btn{
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+}
+.modal{
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+}
+
+.modal-content{
+    background: #fff;
+    width: 400px;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 6px;
+}
+.info h2{
+    margin-top: 140px;
+    font-family: 'Open Sans', sans-serif;
+}
+h2{
+    padding-left: 10%;
+}
+.update_btn{
+    background: transparent;
+    border: 1px solid #336fd0;
+    color: #336fd0;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+.update_btn_cancle{
+    background: transparent;
+    border: 1px solid #d51e1e;
+    color: #d51e1e;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+.input_field{
+    background: transparent;
+    border: 1px solid #0d10b1;
+    border-radius: 10px;
+    padding-left: 10px;
+    height: 3%;
+    
+}
+.display_name{
+    font-family: 'Open Sans', sans-serif;
+    margin-bottom: 10px;
+}
+.TFA{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 40px 0;
+
+}
+.TFA button {
+    background: #4b57ff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease;
+}

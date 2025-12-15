@@ -1,14 +1,14 @@
 <?php
 session_start();
-require_once __DIR__ . '/../database.php';
+require_once __DIR__ . '/../database/database.php';
 
-if (!isset($_SESSION['userid'])) {
+if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
 $field = $_POST['field'] ?? '';
 $value = trim($_POST['value'] ?? '');
-
+$userid = $_SESSION['user_id'];
 $allowed = [
     'vardas',
     'pavarde',
@@ -18,17 +18,18 @@ $allowed = [
 $db = Database::getInstance();
 
 if ($field === 'password') {
-    $hash = password_hash($value, PASSWORD_DEFAULT);
-    $db->update('vartotojas',
-        ['slaptazodis' => $hash],
-        ['id' => $_SESSION['userid']]
-    );
-} elseif (in_array($field, $allowed)) {
-    $db->update('vartotojas',
-        [$field => $value],
-        ['id' => $_SESSION['userid']]
-    );
+    $current = $_POST['current_password'] ?? '';
+    $new = $_POST['new_password'] ?? '';
+
+    $user = $db->select('vartotojas', ['id' => $userid])[0];
+    if(password_verify($current, $user['slaptazodis'])) {
+        $newHash = password_hash($new, PASSWORD_DEFAULT);
+        $db->update('vartotojas',['slaptazodis' => $newHash],['id' => $userid]);
+        $_SESSION['message'] = "Password updated successfully!";
+    } else {
+        $_SESSION['message'] = "Current password is incorrect!";
+    } 
 }
 
-header("Location: ../public/edit_profile.php");
+header("Location: /edit_profile.php");
 exit;

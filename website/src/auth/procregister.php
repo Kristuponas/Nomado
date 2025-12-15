@@ -1,19 +1,12 @@
 <?php
 
 
-require_once "functions.php";
-require_once "database/database.php";
+require_once __DIR__ . "/../functions.php";
+require_once __DIR__ . "/../database/database.php";
+require __DIR__ . "/../settings.php";
 
-$uregister="self";
 
-// Vartotojų profiliai
-$user_roles=array(      // vartotojų rolių vardai ir  atitinkamos userlevel reikšmės
-	"admin"=>"1",
-	"user"=>"2",
-    "unverified"=>"3");   
 
-define("DEFAULT_LEVEL","unverified");  // kokia rolė priskiriama kai registruojasi
-define("ADMIN_LEVEL","admin");  // jis turi vartotojų valdymo teisę per "Administratoriaus sąsaja"
 
 $db = Database::getInstance();
 

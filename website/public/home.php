@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../src/database/database.php';
 session_start();
 
@@ -52,9 +53,14 @@ $featuredHotels = array_slice($featuredHotels, 0, 3);
 // Seasonal Deals: hotels in current season
 $seasonalDeals = $db->select('viesbutis', ['sezonas' => getSeasonId($currSeason)]);
 
-// Recommended Hotels: based on previously viewed tags
-$viewedTagsQueue = $_SESSION['viewed_tags_queue'] ?? [];
-$viewedHotels = $_SESSION['viewed_hotels'] ?? [];
+// ----- Recommended Hotels: based on previously viewed tags -----
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+$viewedHotels = $_SESSION['viewed_hotels'] ?? []; // e.g., [1,3]
+$recommendedHotels = [];
 
 if (isset($_GET['hotel_id'])) {
     $hotelId = (int)$_GET['hotel_id'];

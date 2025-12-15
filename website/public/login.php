@@ -1,6 +1,8 @@
 <?php
 
 session_start();
+require_once("../src/database/database.php");
+
 if (!isset($_SESSION)) {
     session_start();
 }
@@ -13,14 +15,17 @@ $_SESSION['prev'] = "register";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     switch ($_POST['action']) {
-        case 'register':
-            require __DIR__ . '/../src/auth/procregister.php';
-            break;
         case 'login':
-            require __DIR__ . '/../src/auth/proclogin.php';
+            require_once __DIR__ . '/../src/auth/proclogin.php';
             break;
+        case 'register':
+            require_once __DIR__ . '/../src/auth/procregister.php';
+            break;
+        
+        }
+        
     }
-}
+
 ?>
 <html>
 
@@ -67,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input type="submit" class="button" value="Sign In">
                         </div>
                         <div class="hr"></div>
+                        
                         <div class="foot-lnk">
                             <a href="#forgot">Forgot Password?</a>
                         </div>
