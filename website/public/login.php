@@ -1,6 +1,7 @@
 <?php
 
 session_start();
+
 require_once("../src/database/database.php");
 
 if (!isset($_SESSION)) {
@@ -80,6 +81,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div class="sign-up-htm">
                     <form action="" method="POST">
+                        <p><?= $_SESSION['name_error']?></p>
+                        <p><?= $_SESSION['pass_error']?></p>
+                        
                         <input type="hidden" name="action" value="register">
 
                         <div class="group">

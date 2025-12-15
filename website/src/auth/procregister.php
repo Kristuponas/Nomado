@@ -1,71 +1,83 @@
 <?php
 
 
-require_once __DIR__ . "/../functions.php";
-require_once __DIR__ . "/../database/database.php";
-require __DIR__ . "/../settings.php";
-
-
-
+require_once __DIR__ . '/../database/database.php';
+require_once __DIR__ . '/../functions.php';
+require_once __DIR__ . '/../settings.php';
 
 $db = Database::getInstance();
 
-if (!isset($_POST['user_reg'])) {
+// Patikrinam, ar POST užklausa
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['action']) || $_POST['action'] !== 'register') {
     header("Location: /login.php");
     exit;
 }
 
-// GAUNAM DUOMENIS
-$name = strtolower(trim($_POST['name_reg']));
-$surname = strtolower(trim($_POST['surname_reg']));
-$user = strtolower(trim($_POST['user_reg']));
-$pass = trim($_POST['pass_reg']);
-$mail = trim($_POST['mail_reg']);
-$ID_number = trim($_POST['ID_reg']);
+// Gauti duomenis iš formos
+$name      = trim($_POST['name_reg'] ?? '');
+$surname   = trim($_POST['surname_reg'] ?? '');
+$username  = trim($_POST['user_reg'] ?? '');
+$password  = trim($_POST['pass_reg'] ?? '');
+$email     = trim($_POST['mail_reg'] ?? '');
+$ID_number = trim($_POST['ID_reg'] ?? '');
 
-$_SESSION['user_reg'] = $user;
-$_SESSION['mail_reg'] = $mail;
+// Išvalome sesiją klaidoms
+$_SESSION['name_error'] = '';
+$_SESSION['pass_error'] = '';
+$_SESSION['message'] = '';
 
-// VALIDACIJA
-if (!checkname($user)) {
-    $_SESSION['name_error'] = "Bad username";
+// Paprasta validacija
+if (empty($name) || empty($surname) || empty($username) || empty($password) || empty($email) || empty($ID_number)) {
+    $_SESSION['message'] = "Visi laukai privalomi!";
     header("Location: /login.php");
     exit;
 }
 
-list($dbuname) = checkdb($user);
-if ($dbuname) {
-    $_SESSION['name_error'] = "Username already exists";
+if (!checkname($username)) {
+    $_SESSION['name_error'] = "Netinkamas vartotojo vardas!";
     header("Location: /login.php");
     exit;
 }
 
-if (!checkmail($mail) || !checkpassformat($pass)) {
-    $_SESSION['pass_error'] = "Password or email invalid";
+if (!checkmail($email)) {
+    $_SESSION['pass_error'] = "Netinkamas el. paštas!";
     header("Location: /login.php");
     exit;
 }
 
-// REGISTRACIJA DB
-$passHash = password_hash($pass, PASSWORD_DEFAULT);
-$ulevel = $user_roles[DEFAULT_LEVEL];
+if (!checkpassformat($password)) {
+    $_SESSION['pass_error'] = "Slaptažodis netinkamas!";
+    header("Location: /login.php");
+    exit;
+}
 
+
+// Hashinam slaptažodį
+$passHash = password_hash($password, PASSWORD_DEFAULT);
+
+// Nustatome vartotojo tipą
+$ulevel = $user_roles[DEFAULT_LEVEL] ?? 3; // Jei nenurodyta, default į 2 (user)
+
+// Duomenys į DB
 $data = [
-	'vartotojo_vardas' => $user, 
-	'asmens_kodas' => $ID_number, 
-	'vardas' => $name, 
-	'pavarde' => $surname, 
-	'el_pastas' => $mail,
-	'slaptazodis' => $passHash,
-	'tipas' => $ulevel
-	];
+    'vartotojo_vardas' => $username,
+    'asmens_kodas'     => $ID_number,
+    'vardas'           => $name,
+    'pavarde'          => $surname,
+    'el_pastas'        => $email,
+    'slaptazodis'      => $passHash,
+    'tipas'            => $ulevel,
+    'twofa_secret'     => null,
+    'twofa_enabled'    => 0
+];
 
 try {
     $db->insert('vartotojas', $data);
     $_SESSION['message'] = "Registracija sėkminga!";
 } catch (Exception $e) {
-    $_SESSION['message'] = "SQL ERROR " . $e->getMessage();
+    $_SESSION['message'] = "SQL klaida: " . $e->getMessage();
 }
 
+// Nukreipiame atgal į login.php
 header("Location: /login.php");
 exit;
