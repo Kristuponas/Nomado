@@ -251,8 +251,7 @@ if(empty($hotels)) {
                                 $isFavorite = $favCheck->fetch() !== false;
                             }
                             ?>
-
-                            <form action="<?php echo $isFavorite ? 'remove_favorite.php' : 'add_favorite.php'; ?>" method="POST">
+                            <form action="<?php echo $isFavorite ? '/favorites/remove_favorite.php' : '/favorites/add_favorite.php'; ?>"  method="POST" class="favorite-form">
                                 <input type="hidden" name="hotel_id" value="<?php echo $hotel['id']; ?>">
                                 <button type="submit" class="btn <?php echo $isFavorite ? 'btn-outline-danger' : 'btn-outline'; ?>"
                                         <?php if(!isset($_SESSION['user_id'])): ?>

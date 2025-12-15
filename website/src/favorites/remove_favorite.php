@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../src/database/database.php';
+require_once __DIR__ . '/../database/database.php';
 session_start();
 
 // Check if user is logged in
@@ -59,12 +59,12 @@ try {
     }
 
     // Redirect back to favorites page
-    header('Location: favorites.php?success=removed');
+    header('Location: /favorites.php?success=removed');
     exit();
 
 } catch(Exception $e) {
     error_log("Remove favorite error: " . $e->getMessage());
-    header('Location: favorites.php?error=remove_failed');
+    header('Location: /favorites.php?error=remove_failed');
     exit();
 }
 ?>

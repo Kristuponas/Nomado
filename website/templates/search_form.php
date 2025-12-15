@@ -4,11 +4,8 @@
         <input type="text"
                name="search_query"
                id="searchQuery"
-               placeholder="Enter city, country or hotel name"
+               placeholder="Enter city or country"
                autocomplete="off">
-        <button type="button" class="clear-btn" onclick="clearSearchInput()">
-            <i data-feather="x"></i>
-        </button>
     </div>
 
     <div class="search-field">

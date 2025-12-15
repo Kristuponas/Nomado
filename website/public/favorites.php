@@ -3,10 +3,13 @@ require_once __DIR__ . '/../src/database/database.php';
 session_start();
 
 // Check if user is logged in
+
 if(!isset($_SESSION['user_id'])) {
     header('Location: login.php?error=not_logged_in');
     exit();
 }
+
+
 
 $db = Database::getInstance();
 $userId = $_SESSION['user_id'];
@@ -47,10 +50,6 @@ $favoriteHotels = $stmt->fetchAll();
                 <h1><i data-feather="heart"></i> My Favorite Hotels</h1>
                 <p class="page-subtitle">Your saved collection of amazing places to stay</p>
             </div>
-            <a href="search_results.php" class="btn btn-outline">
-                <i data-feather="search"></i>
-                Browse More Hotels
-            </a>
         </div>
 
         <!-- Success/Error Messages -->
@@ -96,15 +95,6 @@ $favoriteHotels = $stmt->fetchAll();
                 </a>
             </div>
         <?php else: ?>
-            <div class="favorites-stats">
-                <div class="stat-card">
-                    <i data-feather="heart"></i>
-                    <div>
-                        <h3><?php echo count($favoriteHotels); ?></h3>
-                        <p>Saved Hotels</p>
-                    </div>
-                </div>
-            </div>
 
             <div class="favorites-grid">
                 <?php foreach($favoriteHotels as $hotel): ?>
@@ -127,7 +117,7 @@ $favoriteHotels = $stmt->fetchAll();
                     ?>
                     <div class="favorite-card">
                         <div class="favorite-image" style="background-image: url('<?php echo $imagePath; ?>');">
-                            <form action="remove_favorite.php" method="POST" class="remove-favorite-form">
+                            <form action="/favorites/remove_favorite.php" method="POST" class="remove-favorite-form">
                                 <input type="hidden" name="hotel_id" value="<?php echo $hotel['id']; ?>">
                                 <button type="submit" class="remove-favorite-btn" onclick="return confirm('Remove from favorites?')">
                                     <i data-feather="heart"></i>

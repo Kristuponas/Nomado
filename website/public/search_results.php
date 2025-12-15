@@ -4,7 +4,6 @@ session_start();
 
 $db = Database::getInstance();
 
-// Handle filter profile application
 if(isset($_GET['profile']) && isset($_SESSION['user_id'])) {
     $profileId = intval($_GET['profile']);
     $profile = $db->select('filtravimo_konfiguracija',
@@ -12,8 +11,62 @@ if(isset($_GET['profile']) && isset($_SESSION['user_id'])) {
     );
 
     if(!empty($profile)) {
-        $config = json_decode($profile[0]['konfiguracija'], true);
-        $_GET = array_merge($_GET, $config);
+        // Get profile basic data
+        $profileData = $profile[0];
+
+        // Get tags for this profile
+        $profileTags = $db->select('filtravimo_konfiguracijos_tag',
+                array('fk_Filtravimo_Konfiguracija' => $profileId)
+        );
+
+        $tagIds = array();
+        foreach($profileTags as $pt) {
+            if($pt['parametro_tipas'] == 'tag' && $pt['fk_Tag'] > 0) {
+                $tagIds[] = $pt['fk_Tag'];
+            }
+            elseif($pt['parametro_tipas'] == 'sezonas') {
+                // Find season by name
+                $season = $db->select('sezonas', array('name' => $pt['reiksme']));
+                if(!empty($season)) {
+                    $_GET['season'] = $season[0]['id'];
+                }
+            }
+            // For location
+            elseif($pt['parametro_tipas'] == 'tag' && $pt['reiksme'] && $pt['fk_Tag'] == 0) {
+                // Find location by city name
+                $location = $db->select('vietove', array('miestas' => $pt['reiksme']));
+                if(!empty($location)) {
+                    $_GET['location'] = $location[0]['id'];
+                }
+            }
+        }
+
+        if(!empty($tagIds)) {
+            $_GET['tags'] = $tagIds;
+        }
+
+        // IMPORTANT: Do NOT set price or room filters if they are NULL
+        // Only set them if they have actual values
+        if(isset($profileData['kaina_nuo']) && $profileData['kaina_nuo'] > 0) {
+            $_GET['min_price'] = $profileData['kaina_nuo'];
+        } else {
+            // Remove min_price from GET if it was previously set
+            unset($_GET['min_price']);
+        }
+
+        if(isset($profileData['kaina_iki']) && $profileData['kaina_iki'] > 0) {
+            $_GET['max_price'] = $profileData['kaina_iki'];
+        } else {
+            // Remove max_price from GET if it was previously set
+            unset($_GET['max_price']);
+        }
+
+        if(isset($profileData['kambariu_skaicius']) && $profileData['kambariu_skaicius'] > 0) {
+            $_GET['min_rooms'] = $profileData['kambariu_skaicius'];
+        } else {
+            // Remove min_rooms from GET if it was previously set
+            unset($_GET['min_rooms']);
+        }
     }
 }
 
@@ -39,9 +92,9 @@ $guests = isset($_GET['guests']) ? $_GET['guests'] : 2;
 
 // Get filter parameters
 $selectedTags = isset($_GET['tags']) ? $_GET['tags'] : array();
-$minPrice = isset($_GET['min_price']) ? $_GET['min_price'] : '';
-$maxPrice = isset($_GET['max_price']) ? $_GET['max_price'] : '';
-$minRooms = isset($_GET['min_rooms']) ? $_GET['min_rooms'] : '';
+$minPrice = isset($_GET['min_price']) && $_GET['min_price'] !== '' ? $_GET['min_price'] : '';
+$maxPrice = isset($_GET['max_price']) && $_GET['max_price'] !== '' ? $_GET['max_price'] : '';
+$minRooms = isset($_GET['min_rooms']) && $_GET['min_rooms'] !== '' ? $_GET['min_rooms'] : '';
 $selectedSeason = isset($_GET['season']) ? $_GET['season'] : '';
 $sortBy = isset($_GET['sort']) ? $_GET['sort'] : 'reitingas_desc';
 
@@ -141,6 +194,7 @@ if(isset($_SESSION['user_id'])) {
     <title>Search Results - Nomado</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/search.css">
+    <link rel="stylesheet" href="css/favorites.css"> <!-- Pridėti šią eilutę -->
     <script src="https://unpkg.com/feather-icons"></script>
 </head>
 <body>
@@ -148,7 +202,7 @@ if(isset($_SESSION['user_id'])) {
 <?php include __DIR__ . '/../templates/navbar.php' ?>
 
 <main class="search-page" style="padding-top: 100px;">
-    <div class="container">
+    <div class="container" >
         <!-- Success/Error Messages -->
         <?php if(isset($_GET['success'])): ?>
             <div class="alert alert-success">
@@ -162,6 +216,9 @@ if(isset($_SESSION['user_id'])) {
                         break;
                     case 'profile_deleted':
                         echo 'Filter profile deleted successfully!';
+                        break;
+                    case 'added_favorite':
+                        echo 'Hotel added to favorites';
                         break;
                 }
                 ?>
@@ -219,12 +276,12 @@ if(isset($_SESSION['user_id'])) {
                         <h4><i data-feather="dollar-sign"></i> Price Range</h4>
                         <div class="price-inputs">
                             <input type="number" name="min_price" placeholder="Min"
-                                   min="0" max="9999" step="1"
-                                   value="<?php echo $minPrice; ?>" class="price-input-small">
+                                   min="1" max="9999" step="1"
+                                   value="<?php echo $minPrice !== '' && $minPrice > 0 ? $minPrice : ''; ?>" class="price-input-small">
                             <span class="price-separator">-</span>
                             <input type="number" name="max_price" placeholder="Max"
-                                   min="0" max="9999" step="1"
-                                   value="<?php echo $maxPrice; ?>" class="price-input-small">
+                                   min="1" max="9999" step="1"
+                                   value="<?php echo $maxPrice !== '' && $maxPrice > 0 ? $maxPrice : ''; ?>" class="price-input-small">
                         </div>
                     </div>
 
@@ -233,7 +290,7 @@ if(isset($_SESSION['user_id'])) {
                         <h4><i data-feather="home"></i> Minimum Rooms</h4>
                         <input type="number" name="min_rooms" placeholder="Number of rooms"
                                min="1" max="100"
-                               value="<?php echo $minRooms; ?>" class="filter-input">
+                               value="<?php echo $minRooms !== '' && $minRooms > 0 ? $minRooms : ''; ?>" class="filter-input">
                     </div>
 
                     <!-- Season Filter -->
@@ -269,29 +326,13 @@ if(isset($_SESSION['user_id'])) {
                     <button type="submit" class="btn btn-primary filter-apply">Apply Filters</button>
                 </form>
 
-                <!-- Filter Profiles -->
-                <?php if(!empty($filterProfiles)): ?>
-                    <div class="filter-section filter-profiles">
-                        <h4><i data-feather="bookmark"></i> Saved Filter Profiles</h4>
-                        <?php foreach($filterProfiles as $profile): ?>
-                            <div class="profile-item">
-                                <a href="?profile=<?php echo $profile['id']; ?>" class="profile-link">
-                                    <?php echo $profile['pavadinimas']; ?>
-                                </a>
-                                <a href="delete_filter_profile.php?id=<?php echo $profile['id']; ?>"
-                                   class="profile-delete" onclick="return confirm('Delete this profile?')">
-                                    <i data-feather="trash-2"></i>
-                                </a>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
-
-                <!-- Show filter profiles button -->
+                <!-- Filter profiles toggle button -->
                 <div class="filter-section">
-                    <button type="button" class="btn btn-outline save-filter-btn" onclick="showProfiles()">
-                        <i data-feather="filter"></i> Show Saved Profiles
-                    </button>
+                    <?php if(isset($_SESSION['user_id'])): ?>
+                        <button type="button" class="btn btn-outline save-filter-btn" onclick="toggleProfiles()" id="toggleProfilesBtn">
+                            <i data-feather="filter"></i> Filter Profiles
+                        </button>
+                    <?php endif; ?>
 
                     <?php if(!isset($_SESSION['user_id'])): ?>
                         <button type="button" class="btn btn-outline save-filter-btn" onclick="showLoginAlert()">
@@ -303,6 +344,28 @@ if(isset($_SESSION['user_id'])) {
                         </button>
                     <?php endif; ?>
                 </div>
+
+                <!-- Filter Profiles (hidden by default, shown when button is clicked) -->
+                <div id="filterProfilesSection" class="filter-section filter-profiles" style="display: none;">
+                    <div class="profiles-list">
+                        <?php if(!empty($filterProfiles)): ?>
+                            <?php foreach($filterProfiles as $profile): ?>
+                                <div class="profile-item">
+                                    <a href="?profile=<?php echo $profile['id']; ?>" class="profile-link">
+                                        <?php echo $profile['pavadinimas']; ?>
+                                    </a>
+                                    <a href="/filter_profile/delete_filter_profile.php?id=<?php echo $profile['id']; ?>"
+                                       class="profile-delete" onclick="return confirm('Delete this profile?')" title="Delete profile">
+                                        <i data-feather="trash-2"></i>
+                                    </a>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p class="no-profiles">You don't have any saved filter profiles yet.</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
             </aside>
 
             <!-- Results Section -->
@@ -378,12 +441,15 @@ if(isset($_SESSION['user_id'])) {
                                         $isFavorite = $favCheck->fetch() !== false;
                                     }
                                     ?>
-                                    <form action="<?php echo $isFavorite ? 'remove_favorite.php' : 'add_favorite.php'; ?>" method="POST" class="favorite-form">
+                                    <!-- PAKEISTA: Naudojama tokia pati širdutės forma kaip favorites.php -->
+                                    <form action="<?php echo $isFavorite ? '/favorites/remove_favorite.php' : '/favorites/add_favorite.php'; ?>" method="POST" class="remove-favorite-form">
                                         <input type="hidden" name="hotel_id" value="<?php echo $hotel['id']; ?>">
-                                        <button type="submit" class="favorite-btn <?php echo $isFavorite ? 'active' : ''; ?>"
+                                        <button type="submit" class="remove-favorite-btn <?php echo $isFavorite ? 'favorite' : ''; ?>"
                                                 title="<?php echo $isFavorite ? 'Remove from favorites' : 'Add to favorites'; ?>"
                                                 <?php if(!isset($_SESSION['user_id'])): ?>
                                                     onclick="event.preventDefault(); alert('Please log in to add favorites'); window.location.href='login.php';"
+                                                <?php else: ?>
+                                                    onclick="return confirm('<?php echo $isFavorite ? 'Remove from favorites?' : 'Add to favorites?'; ?>')"
                                                 <?php endif; ?>>
                                             <i data-feather="heart"></i>
                                         </button>
@@ -450,7 +516,7 @@ if(isset($_SESSION['user_id'])) {
     <div class="modal-content">
         <span class="close" onclick="closeSaveModal()">&times;</span>
         <h2>Save Filter Profile</h2>
-        <form action="save_filter_profile.php" method="POST" onsubmit="return validateProfileName()">
+        <form action="/filter_profile/save_filter_profile.php" method="POST" onsubmit="return validateProfileName()">
             <div class="form-group">
                 <label for="profile_name">Profile Name:</label>
                 <input type="text" id="profile_name" name="profile_name" required
@@ -459,15 +525,16 @@ if(isset($_SESSION['user_id'])) {
             </div>
 
             <!-- Hidden inputs for current filter values -->
-            <input type="hidden" name="search_query" value="<?php echo htmlspecialchars($searchQuery); ?>">
-            <input type="hidden" name="location" value="<?php echo $searchLocation; ?>">
-            <input type="hidden" name="min_price" value="<?php echo $minPrice; ?>">
-            <input type="hidden" name="max_price" value="<?php echo $maxPrice; ?>">
-            <input type="hidden" name="min_rooms" value="<?php echo $minRooms; ?>">
-            <input type="hidden" name="season" value="<?php echo $selectedSeason; ?>">
-            <?php foreach($selectedTags as $tag): ?>
-                <input type="hidden" name="tags[]" value="<?php echo $tag; ?>">
-            <?php endforeach; ?>
+            <input type="hidden" name="location" value="<?php echo isset($searchLocation) && $searchLocation !== '' ? $searchLocation : ''; ?>">
+            <input type="hidden" name="min_price" value="<?php echo isset($minPrice) && $minPrice !== '' ? $minPrice : ''; ?>">
+            <input type="hidden" name="max_price" value="<?php echo isset($maxPrice) && $maxPrice !== '' ? $maxPrice : ''; ?>">
+            <input type="hidden" name="min_rooms" value="<?php echo isset($minRooms) && $minRooms !== '' ? $minRooms : ''; ?>">
+            <input type="hidden" name="season" value="<?php echo isset($selectedSeason) && $selectedSeason !== '' ? $selectedSeason : ''; ?>">
+            <?php if(!empty($selectedTags)): ?>
+                <?php foreach($selectedTags as $tag): ?>
+                    <input type="hidden" name="tags[]" value="<?php echo $tag; ?>">
+                <?php endforeach; ?>
+            <?php endif; ?>
 
             <div class="modal-actions">
                 <button type="button" class="btn btn-outline" onclick="closeSaveModal()">Cancel</button>
@@ -480,8 +547,34 @@ if(isset($_SESSION['user_id'])) {
 <?php include __DIR__ . '/../templates/footer.php' ?>
 
 <script>
-    feather.replace();
+    // Perkelti feather.replace() į DOMContentLoaded vidų
+    document.addEventListener('DOMContentLoaded', function() {
+        feather.replace();
 
+        // Initialize compare button state
+        updateCompareButton();
+
+        // Prevent negative values in price inputs
+        const priceInputs = document.querySelectorAll('input[name="min_price"], input[name="max_price"]');
+        priceInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                if (parseFloat(this.value) < 0) {
+                    this.value = 0;
+                }
+            });
+        });
+
+        const roomInput = document.querySelector('input[name="min_rooms"]');
+        if (roomInput) {
+            roomInput.addEventListener('change', function() {
+                if (parseInt(this.value) < 1) {
+                    this.value = 1;
+                }
+            });
+        }
+    });
+
+    // Funkcijos, kurios gali būti iškvietimos bet kada
     function updateSort() {
         const sortValue = document.getElementById('sortSelect').value;
         const form = document.getElementById('filterForm');
@@ -494,6 +587,60 @@ if(isset($_SESSION['user_id'])) {
     }
 
     function showSaveModal() {
+        // Get current form values
+        const form = document.getElementById('filterForm');
+        const formData = new FormData(form);
+
+        // Clear the modal's hidden inputs first
+        const modalForm = document.querySelector('#saveFilterModal form');
+        const hiddenInputs = modalForm.querySelectorAll('input[type="hidden"]');
+        hiddenInputs.forEach(input => {
+            if(input.name !== 'profile_name') {
+                input.remove();
+            }
+        });
+
+        // Add all current form values to modal form
+        for (let [name, value] of formData.entries()) {
+            // Skip empty values for price and rooms
+            if ((name === 'min_price' || name === 'max_price' || name === 'min_rooms') && value === '') {
+                continue;
+            }
+
+            // For checkboxes (tags), we need to handle them specially
+            if (name === 'tags[]') {
+                const existingInput = modalForm.querySelector(`input[name="${name}"][value="${value}"]`);
+                if (!existingInput) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = name;
+                    input.value = value;
+                    modalForm.appendChild(input);
+                }
+            } else {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                input.value = value;
+                modalForm.appendChild(input);
+            }
+        }
+
+        // Also add sort value if it exists in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const sortValue = urlParams.get('sort');
+        if (sortValue) {
+            const existingSort = modalForm.querySelector('input[name="sort"]');
+            if (!existingSort) {
+                const sortInput = document.createElement('input');
+                sortInput.type = 'hidden';
+                sortInput.name = 'sort';
+                sortInput.value = sortValue;
+                modalForm.appendChild(sortInput);
+            }
+        }
+
+        // Show modal
         document.getElementById('saveFilterModal').style.display = 'block';
         document.getElementById('profile_name').focus();
     }
@@ -503,21 +650,36 @@ if(isset($_SESSION['user_id'])) {
         window.location.href = 'login.php';
     }
 
-    function showProfiles() {
+    function toggleProfiles() {
         <?php if(!isset($_SESSION['user_id'])): ?>
         alert('Please log in to view your saved filter profiles.');
         window.location.href = 'login.php';
         <?php else: ?>
-        // Scroll to filter profiles section
-        const profilesSection = document.querySelector('.filter-profiles');
+        const profilesSection = document.getElementById('filterProfilesSection');
+        const toggleBtn = document.getElementById('toggleProfilesBtn');
+
         if (profilesSection) {
-            profilesSection.scrollIntoView({ behavior: 'smooth' });
-            profilesSection.style.backgroundColor = '#f0f7ff';
-            setTimeout(() => {
-                profilesSection.style.backgroundColor = '';
-            }, 2000);
-        } else {
-            alert('You don\'t have any saved filter profiles yet.');
+            if (profilesSection.style.display === 'none' || profilesSection.style.display === '') {
+                // Show profiles section
+                profilesSection.style.display = 'block';
+
+                // Change button icon and add active class
+                if (toggleBtn) {
+                    toggleBtn.innerHTML = '<i data-feather="chevron-up"></i> Filter Profiles';
+                    feather.replace();
+                    toggleBtn.classList.add('active');
+                }
+            } else {
+                // Hide profiles section
+                profilesSection.style.display = 'none';
+
+                // Change button icon and remove active class
+                if (toggleBtn) {
+                    toggleBtn.innerHTML = '<i data-feather="filter"></i> Filter Profiles';
+                    feather.replace();
+                    toggleBtn.classList.remove('active');
+                }
+            }
         }
         <?php endif; ?>
     }
@@ -566,12 +728,39 @@ if(isset($_SESSION['user_id'])) {
 
     function updateCompareButton() {
         const checkboxes = document.querySelectorAll('.hotel-compare:checked');
+        const allCheckboxes = document.querySelectorAll('.hotel-compare');
         const compareBtn = document.querySelector('[onclick="compareSelected()"]');
 
         if (checkboxes.length >= 2) {
             compareBtn.textContent = `Compare Selected (${checkboxes.length}/3)`;
         } else {
             compareBtn.textContent = 'Compare Selected (Max 3)';
+        }
+
+        // If 3 hotels are selected, disable all unchecked checkboxes
+        if (checkboxes.length >= 3) {
+            allCheckboxes.forEach(checkbox => {
+                if (!checkbox.checked) {
+                    checkbox.disabled = true;
+                    const label = checkbox.parentElement.querySelector('.compare-label');
+                    if (label) {
+                        label.style.opacity = '0.5';
+                        label.style.cursor = 'not-allowed';
+                        label.title = 'Maximum 3 hotels can be compared';
+                    }
+                }
+            });
+        } else {
+            // Re-enable all checkboxes
+            allCheckboxes.forEach(checkbox => {
+                checkbox.disabled = false;
+                const label = checkbox.parentElement.querySelector('.compare-label');
+                if (label) {
+                    label.style.opacity = '1';
+                    label.style.cursor = 'pointer';
+                    label.title = '';
+                }
+            });
         }
     }
 
@@ -582,27 +771,6 @@ if(isset($_SESSION['user_id'])) {
             closeSaveModal();
         }
     }
-
-    // Prevent negative values in price inputs
-    document.addEventListener('DOMContentLoaded', function() {
-        const priceInputs = document.querySelectorAll('input[name="min_price"], input[name="max_price"]');
-        priceInputs.forEach(input => {
-            input.addEventListener('change', function() {
-                if (parseFloat(this.value) < 0) {
-                    this.value = 0;
-                }
-            });
-        });
-
-        const roomInput = document.querySelector('input[name="min_rooms"]');
-        if (roomInput) {
-            roomInput.addEventListener('change', function() {
-                if (parseInt(this.value) < 1) {
-                    this.value = 1;
-                }
-            });
-        }
-    });
 
     // Auto-hide alerts after 5 seconds
     setTimeout(function() {
@@ -620,6 +788,59 @@ if(isset($_SESSION['user_id'])) {
     }
     .search-info strong {
         color: #333;
+    }
+
+    /* ŠIRDUTĖS STILIUS */
+    .result-image .remove-favorite-form {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        z-index: 10;
+    }
+
+    .result-image .remove-favorite-btn {
+        background: white;
+        border: none;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+    }
+
+    .result-image .remove-favorite-btn:hover {
+        transform: scale(1.1);
+        background: #ff006e;
+    }
+
+    .result-image .remove-favorite-btn:hover i {
+        color: white;
+        stroke: white;
+    }
+
+    /* UŽPILDYTA ŠIRDUTĖ (kai yra favorite) */
+    .result-image .remove-favorite-btn.favorite i {
+        fill: #ff006e !important;
+        color: #ff006e !important;
+        stroke: #ff006e !important;
+    }
+
+    /* TUŠČIA ŠIRDUTĖ (kai nėra favorite) */
+    .result-image .remove-favorite-btn:not(.favorite) i {
+        fill: none !important;
+        color: #6c757d !important;
+        stroke: #6c757d !important;
+    }
+
+    /* Hover efekto koregavimas */
+    .result-image .remove-favorite-btn:hover i {
+        fill: white !important;
+        color: white !important;
+        stroke: white !important;
     }
 </style>
 </body>
