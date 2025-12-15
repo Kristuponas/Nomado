@@ -1,4 +1,7 @@
 <?php
+if (!isset($_GET['hotel_id'])) {
+    header("Location: /");
+}
 session_start();
 
 require_once __DIR__ . '/../src/database/database.php';
@@ -49,7 +52,6 @@ try {
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -64,6 +66,7 @@ try {
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap"
         rel="stylesheet">
     <script async src="https://maps.googleapis.com/maps/api/js?key=<?= $_ENV['GOOGLE_MAPS_API_KEY'] ?>&loading=async&libraries=maps,marker"></script>
+    <script src="js/comments.js" defer></script>
 </head>
 
 <body>
@@ -92,114 +95,54 @@ try {
             </div>
         </section>
 
-        <div class ="details">
-            <div class = "row">
-                <div class="row-content">
-                    <div class="amenity-icon">
-                            <i data-feather="wifi"></i>
-                    </div>
-                    <div class="amenity-text">
-                        <h3>Free Wi-Fi</h3>
-                        <p>High-speed internet access throughout the property</p>
-                    </div>
-                </div>
-            </div>
-            <div class = "row">
-                <div class="row-content">
-                    <div class="amenity-icon">
-                            <i data-feather="briefcase"></i>
-                    </div>
-                    <div class="amenity-text">
-                        <h3>Room service</h3>
-                        <p>Enjoy delicious meals delivered right to your room</p>
-                    </div>
-                </div>
-            </div>
-            <div class = "row">
-                <div class="row-content">
-                    <div class="amenity-icon">
-                            <i data-feather="sun"></i>
-                    </div>
-                    <div class="amenity-text">
-                        <h3>Views</h3>
-                        <p>Balcony view</p>
-                    </div>
-                </div>
-            </div>
-            <div class = "row">
-                <div class="row-content">
-                    <div class="amenity-icon">
-                            <i data-feather="truck"></i>
-                    </div>
-                    <div class="amenity-text">
-                        <h3>Free parking</h3>
-                        <p>Free parking next to the property</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="booking-container">
+    <a href="/booking.php?hotel_id=<?= $hotel['id'] ?>" class="btn btn-outline book-now-button">
+        Book Now
+    </a>
+</div>
 
-        <div class="hotel-details">
+        <div class="hotel-description">
 	    <?= $converter->convert($hotel['aprasymas'])->getContent() ?>
         </div>
 
-        <div class="map-picture">
-        <gmp-map
-	    center="<?= $coords['lat'] ?>, <?= $coords['lng'] ?>"
-            zoom="10"
-	    map-id="DEMO_MAP_ID"
-	    style="height: 500px">
+        <div class="map">
+	    <gmp-map
+		center="<?= $coords['lat'] ?>, <?= $coords['lng'] ?>"
+		zoom="17"
+		map-id="DEMO_MAP_ID">
 	    <gmp-advanced-marker
-		 position="<?= $coords['lat'] ?>,<?= $coords['lng'] ?>">
-	    </gmp-advanced-marker>
-        </gmp-map>
+		position="<?= $coords['lat'] ?>, <?= $coords['lng'] ?>"
+		title="<?= $hotel['pavadinimas'] ?>"
+		gmp-clickable></gmp-advanced-marker>
+	    </gmp-map>
         </div>
+
         <section class="testimonials">
             <div class="container">
                 <h2 class="section-title">What Our Guests Say</h2>
-                <div class="testimonial-slider">
-                    <div class="testimonial-card">
-                        <div class="testimonial-content">
-                            <div class="rating">
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star" class="filled"></i>
-                            </div>
-                            <p>"The service was impeccable and the room was even better than the photos. Will definitely be returning!"</p>
-                            <div class="guest-info">
-                                <div class="guest-avatar" style="background-image: url('http://static.photos/people/100x100/1');"></div>
-                                <div>
-                                    <h4>Sarah Johnson</h4>
-                                    <p>New York, USA</p>
-                                </div>
-                            </div>
-                        </div>
+
+                <div id="comments-wrapper">
+                    <div id="comment-container">
+                        <!-- Comments will be rendered here -->
                     </div>
-                    
-                    <div class="testimonial-card">
-                        <div class="testimonial-content">
-                            <div class="rating">
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star" class="filled"></i>
-                                <i data-feather="star"></i>
-                            </div>
-                            <p>"The location was perfect and the staff went above and beyond to make our stay memorable."</p>
-                            <div class="guest-info">
-                                <div class="guest-avatar" style="background-image: url('http://static.photos/people/100x100/2');"></div>
-                                <div>
-                                    <h4>Michael Chen</h4>
-                                    <p>Toronto, Canada</p>
-                                </div>
-                            </div>
-                        </div>
+
+                    <div id="comment-management">
+                        <button id="page-back-button" class="nav-icon" type="button">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path d="M10 2 L4 8 L10 14" stroke="currentColor" fill="none" stroke-width="2"/>
+                            </svg>
+                        </button>
+
+                        <button id="page-forward-button" class="nav-icon" type="button">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path d="M6 2 L12 8 L6 14" stroke="currentColor" fill="none" stroke-width="2"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </div>
         </section>
+
         <!-- Fullscreen Modal (hidden by default) -->
         <div id="imageModal" class="modal">
             <span class="close">&times;</span>
@@ -213,7 +156,6 @@ try {
     <script>
         feather.replace();
     </script>
-    <script src="components/footer.js"></script>
 
     <script>
         // Slider functionality (same as before)
@@ -256,5 +198,4 @@ try {
         });
     </script>
 </body>
-
 </html>
