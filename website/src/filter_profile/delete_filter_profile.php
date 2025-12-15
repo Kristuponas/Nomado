@@ -19,7 +19,12 @@ if($profileId > 0) {
     );
 
     if(!empty($profile)) {
-        // Delete the profile
+        // PIRMA: ištrinti visus susijusius tag'us
+        $db->delete('filtravimo_konfiguracijos_tag',
+            array('fk_Filtravimo_Konfiguracija' => $profileId)
+        );
+
+        // TADA: ištrinti patį profilį
         $db->delete('filtravimo_konfiguracija', array('id' => $profileId));
         header('Location: /search_results.php?success=profile_deleted');
     } else {

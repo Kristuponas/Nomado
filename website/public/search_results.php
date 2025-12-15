@@ -1,3 +1,5 @@
+[file name]: search_results.php
+[file content begin]
 <?php
 require_once __DIR__ . '/../src/database/database.php';
 session_start();
@@ -177,7 +179,49 @@ switch($sortBy) {
 // Execute query
 $stmt = $db->getHandler()->prepare($sql);
 $stmt->execute($params);
-$results = $stmt->fetchAll();
+$allResults = $stmt->fetchAll();
+
+// Filter hotels based on availability if dates are provided
+$results = array();
+if (!empty($checkIn) && !empty($checkOut)) {
+    foreach ($allResults as $hotel) {
+        // Get busy rooms count for the selected date range
+        $busyRoomsQuery = "
+            SELECT COUNT(*) as busy_rooms
+            FROM rezervacija r
+            WHERE r.fk_Viesbutis = ?
+            AND r.busena IN (1, 2) -- laukiamas arba patvirtintas
+            AND NOT (r.pabaigos_data <= ? OR r.pradzios_data >= ?)
+        ";
+
+        $busyStmt = $db->getHandler()->prepare($busyRoomsQuery);
+        $busyStmt->execute([$hotel['id'], $checkIn, $checkOut]);
+        $busyResult = $busyStmt->fetch(PDO::FETCH_ASSOC);
+        $busyRooms = $busyResult['busy_rooms'] ?? 0;
+
+        // Calculate available rooms
+        $availableRooms = $hotel['kambariu_skaicius'] - $busyRooms;
+
+        // Add hotel to results only if it has available rooms
+        if ($availableRooms > 0) {
+            $hotel['available_rooms'] = $availableRooms;
+            $hotel['busy_rooms'] = $busyRooms;
+            $results[] = $hotel;
+        }
+    }
+
+    // If no results but we have dates, show a message
+    if (empty($results) && !empty($allResults)) {
+        $noAvailabilityMessage = "No hotels available for the selected dates.";
+    }
+} else {
+    // If no dates provided, show all hotels with full availability
+    foreach ($allResults as $hotel) {
+        $hotel['available_rooms'] = $hotel['kambariu_skaicius'];
+        $hotel['busy_rooms'] = 0;
+        $results[] = $hotel;
+    }
+}
 
 // Get user's filter profiles if logged in
 $filterProfiles = array();
@@ -194,7 +238,7 @@ if(isset($_SESSION['user_id'])) {
     <title>Search Results - Nomado</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/search.css">
-    <link rel="stylesheet" href="css/favorites.css"> <!-- Pridėti šią eilutę -->
+    <link rel="stylesheet" href="css/favorites.css">
     <script src="https://unpkg.com/feather-icons"></script>
 </head>
 <body>
@@ -202,7 +246,7 @@ if(isset($_SESSION['user_id'])) {
 <?php include __DIR__ . '/../templates/navbar.php' ?>
 
 <main class="search-page" style="padding-top: 100px;">
-    <div class="container" >
+    <div class="container">
         <!-- Success/Error Messages -->
         <?php if(isset($_GET['success'])): ?>
             <div class="alert alert-success">
@@ -243,6 +287,14 @@ if(isset($_SESSION['user_id'])) {
             </div>
         <?php endif; ?>
 
+        <!-- Availability warning message -->
+        <?php if(!empty($checkIn) && !empty($checkOut) && !empty($noAvailabilityMessage)): ?>
+            <div class="alert alert-warning">
+                <?php echo $noAvailabilityMessage; ?>
+                <p>Try different dates or adjust your filters.</p>
+            </div>
+        <?php endif; ?>
+
         <div class="search-layout">
             <!-- Filters Sidebar -->
             <aside class="filters-sidebar">
@@ -256,6 +308,34 @@ if(isset($_SESSION['user_id'])) {
                     <?php if(!empty($searchQuery)): ?>
                         <input type="hidden" name="search_query" value="<?php echo htmlspecialchars($searchQuery); ?>">
                     <?php endif; ?>
+
+                    <!-- Date inputs for availability check -->
+                    <div class="filter-section">
+                        <h4><i data-feather="calendar"></i> Check Dates</h4>
+                        <div class="date-inputs">
+                            <div class="date-field">
+                                <label>Check-in:</label>
+                                <input type="date" name="check_in"
+                                       value="<?php echo htmlspecialchars($checkIn); ?>"
+                                       min="<?php echo date('Y-m-d'); ?>"
+                                       class="filter-input">
+                            </div>
+                            <div class="date-field">
+                                <label>Check-out:</label>
+                                <input type="date" name="check_out"
+                                       value="<?php echo htmlspecialchars($checkOut); ?>"
+                                       min="<?php echo date('Y-m-d'); ?>"
+                                       class="filter-input">
+                            </div>
+                        </div>
+                        <?php if(!empty($checkIn) && !empty($checkOut)): ?>
+                            <p class="date-info-text">
+                                Checking availability for:<br>
+                                <strong><?php echo date('M d, Y', strtotime($checkIn)); ?></strong> to
+                                <strong><?php echo date('M d, Y', strtotime($checkOut)); ?></strong>
+                            </p>
+                        <?php endif; ?>
+                    </div>
 
                     <!-- Location Filter -->
                     <div class="filter-section">
@@ -376,6 +456,22 @@ if(isset($_SESSION['user_id'])) {
                         <?php if(!empty($searchQuery)): ?>
                             <p class="search-info">Showing results for: <strong><?php echo htmlspecialchars($searchQuery); ?></strong></p>
                         <?php endif; ?>
+                        <?php if(!empty($checkIn) && !empty($checkOut)): ?>
+                            <p class="date-info">
+                                <i data-feather="calendar"></i>
+                                Dates: <?php echo date('M d, Y', strtotime($checkIn)); ?> - <?php echo date('M d, Y', strtotime($checkOut)); ?>
+                            </p>
+                        <?php elseif(empty($results) && !empty($checkIn) && !empty($checkOut)): ?>
+                            <p class="date-info">
+                                <i data-feather="calendar"></i>
+                                Showing hotels with available rooms for selected dates.
+                            </p>
+                        <?php else: ?>
+                            <p class="date-info">
+                                <i data-feather="info"></i>
+                                Select dates to see room availability.
+                            </p>
+                        <?php endif; ?>
                         <button type="button" class="btn btn-outline" onclick="compareSelected()" style="margin-top: 10px;">
                             <i data-feather="columns"></i> Compare Selected (Max 3)
                         </button>
@@ -404,7 +500,10 @@ if(isset($_SESSION['user_id'])) {
                         <div class="no-results">
                             <i data-feather="search"></i>
                             <h3>No hotels found</h3>
-                            <p>Try adjusting your filters to see more results</p>
+                            <p>Try adjusting your filters or select different dates.</p>
+                            <?php if(empty($checkIn) || empty($checkOut)): ?>
+                                <p><em>Tip: Select check-in and check-out dates to see room availability.</em></p>
+                            <?php endif; ?>
                         </div>
                     <?php else: ?>
                         <?php foreach($results as $hotel): ?>
@@ -441,7 +540,7 @@ if(isset($_SESSION['user_id'])) {
                                         $isFavorite = $favCheck->fetch() !== false;
                                     }
                                     ?>
-                                    <!-- PAKEISTA: Naudojama tokia pati širdutės forma kaip favorites.php -->
+                                    <!-- Heart button for favorites -->
                                     <form action="<?php echo $isFavorite ? '/favorites/remove_favorite.php' : '/favorites/add_favorite.php'; ?>" method="POST" class="remove-favorite-form">
                                         <input type="hidden" name="hotel_id" value="<?php echo $hotel['id']; ?>">
                                         <button type="submit" class="remove-favorite-btn <?php echo $isFavorite ? 'favorite' : ''; ?>"
@@ -468,6 +567,30 @@ if(isset($_SESSION['user_id'])) {
                                         <?php echo $hotel['miestas'] . ', ' . $hotel['salis']; ?>
                                     </p>
                                     <p class="result-description"><?php echo $hotel['trumpas_aprasymas']; ?></p>
+
+                                    <!-- Availability info -->
+                                    <div class="availability-info">
+                                        <div class="availability-details">
+                                            <span class="availability-label">
+                                                <i data-feather="home"></i> Rooms:
+                                            </span>
+                                            <div class="room-stats">
+                                                <span class="available-rooms">
+                                                    <strong><?php echo $hotel['available_rooms']; ?></strong> available
+                                                </span>
+                                                <span class="total-rooms">
+                                                    / <?php echo $hotel['kambariu_skaicius']; ?> total
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <?php if(!empty($checkIn) && !empty($checkOut) && $hotel['available_rooms'] < 5): ?>
+                                            <div class="low-availability-warning">
+                                                <i data-feather="alert-circle"></i>
+                                                <span>Low availability for selected dates</span>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+
                                     <div class="result-tags">
                                         <?php foreach(array_slice($tagDetails, 0, 3) as $tag): ?>
                                             <span class="tag-badge"><?php echo $tag['pavadinimas']; ?></span>
@@ -479,6 +602,9 @@ if(isset($_SESSION['user_id'])) {
                                         <div class="price-info">
                                             <span class="price-amount">$<?php echo $hotel['kaina']; ?></span>
                                             <span class="price-period">/ night</span>
+                                            <?php if($hotel['nuolaida'] > 0): ?>
+                                                <span class="discount-badge">-<?php echo $hotel['nuolaida']; ?>%</span>
+                                            <?php endif; ?>
                                         </div>
 
                                         <!-- ACTIONS SECTION (Compare + View Details) -->
@@ -495,8 +621,11 @@ if(isset($_SESSION['user_id'])) {
 
                                             <form action="hotel_details.php" method="GET" class="details-form">
                                                 <input type="hidden" name="hotel_id" value="<?php echo $hotel['id']; ?>">
-                                                <button type="submit" class="btn btn-primary">
-                                                    <i data-feather="eye"></i> View Details
+                                                <input type="hidden" name="check_in" value="<?php echo htmlspecialchars($checkIn); ?>">
+                                                <input type="hidden" name="check_out" value="<?php echo htmlspecialchars($checkOut); ?>">
+                                                <button type="submit" class="btn btn-primary <?php echo empty($checkIn) || empty($checkOut) ? 'btn-outline' : ''; ?>">
+                                                    <i data-feather="eye"></i>
+                                                    <?php echo empty($checkIn) || empty($checkOut) ? 'View Details' : 'Book Now'; ?>
                                                 </button>
                                             </form>
                                         </div>
@@ -530,6 +659,8 @@ if(isset($_SESSION['user_id'])) {
             <input type="hidden" name="max_price" value="<?php echo isset($maxPrice) && $maxPrice !== '' ? $maxPrice : ''; ?>">
             <input type="hidden" name="min_rooms" value="<?php echo isset($minRooms) && $minRooms !== '' ? $minRooms : ''; ?>">
             <input type="hidden" name="season" value="<?php echo isset($selectedSeason) && $selectedSeason !== '' ? $selectedSeason : ''; ?>">
+            <input type="hidden" name="check_in" value="<?php echo htmlspecialchars($checkIn); ?>">
+            <input type="hidden" name="check_out" value="<?php echo htmlspecialchars($checkOut); ?>">
             <?php if(!empty($selectedTags)): ?>
                 <?php foreach($selectedTags as $tag): ?>
                     <input type="hidden" name="tags[]" value="<?php echo $tag; ?>">
@@ -547,7 +678,6 @@ if(isset($_SESSION['user_id'])) {
 <?php include __DIR__ . '/../templates/footer.php' ?>
 
 <script>
-    // Perkelti feather.replace() į DOMContentLoaded vidų
     document.addEventListener('DOMContentLoaded', function() {
         feather.replace();
 
@@ -572,9 +702,42 @@ if(isset($_SESSION['user_id'])) {
                 }
             });
         }
+
+        // Date validation
+        const checkInInput = document.querySelector('input[name="check_in"]');
+        const checkOutInput = document.querySelector('input[name="check_out"]');
+
+        if (checkInInput && checkOutInput) {
+            // Set min dates
+            const today = new Date().toISOString().split('T')[0];
+            checkInInput.min = today;
+            checkOutInput.min = today;
+
+            // When check-in changes, update check-out min date
+            checkInInput.addEventListener('change', function() {
+                if (checkInInput.value) {
+                    checkOutInput.min = checkInInput.value;
+
+                    // If check-out is before new check-in, adjust it
+                    if (checkOutInput.value && checkOutInput.value < checkInInput.value) {
+                        checkOutInput.value = checkInInput.value;
+                    }
+                }
+            });
+
+            // Validate dates before form submission
+            document.getElementById('filterForm').addEventListener('submit', function(e) {
+                if (checkInInput.value && checkOutInput.value) {
+                    if (checkOutInput.value <= checkInInput.value) {
+                        e.preventDefault();
+                        alert('Check-out date must be after check-in date');
+                        return false;
+                    }
+                }
+            });
+        }
     });
 
-    // Funkcijos, kurios gali būti iškvietimos bet kada
     function updateSort() {
         const sortValue = document.getElementById('sortSelect').value;
         const form = document.getElementById('filterForm');
@@ -790,6 +953,43 @@ if(isset($_SESSION['user_id'])) {
         color: #333;
     }
 
+    .date-info {
+        margin-top: 8px;
+        color: #666;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .date-info-text {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #666;
+        line-height: 1.4;
+    }
+
+    .date-info-text strong {
+        color: #2c3e50;
+    }
+
+    .date-inputs {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .date-field {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .date-field label {
+        font-size: 13px;
+        color: #666;
+    }
+
     /* ŠIRDUTĖS STILIUS */
     .result-image .remove-favorite-form {
         position: absolute;
@@ -842,6 +1042,88 @@ if(isset($_SESSION['user_id'])) {
         color: white !important;
         stroke: white !important;
     }
+
+    /* Availability styles */
+    .availability-info {
+        margin: 12px 0;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #28a745;
+    }
+
+    .availability-details {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .availability-label {
+        font-size: 13px;
+        color: #666;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .room-stats {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .available-rooms {
+        color: #28a745;
+        font-weight: 500;
+    }
+
+    .total-rooms {
+        color: #666;
+        font-size: 13px;
+    }
+
+    .low-availability-warning {
+        margin-top: 8px;
+        padding: 6px 10px;
+        background-color: #fff3cd;
+        border: 1px solid #ffc107;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: #856404;
+    }
+
+    .low-availability-warning i {
+        width: 14px;
+        height: 14px;
+    }
+
+    .alert-warning {
+        background-color: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .alert-warning p {
+        margin: 5px 0 0 0;
+        font-size: 14px;
+    }
+
+    .discount-badge {
+        background-color: #dc3545;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+        margin-left: 8px;
+    }
 </style>
 </body>
 </html>
+[file content end]
