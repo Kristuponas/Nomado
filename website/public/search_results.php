@@ -493,8 +493,8 @@ if(isset($_SESSION['user_id'])) {
                                                 </label>
                                             </div>
 
-                                            <form action="Hotel_Details.php" method="GET" class="details-form">
-                                                <input type="hidden" name="id" value="<?php echo $hotel['id']; ?>">
+                                            <form action="hotel_details.php" method="GET" class="details-form">
+                                                <input type="hidden" name="hotel_id" value="<?php echo $hotel['id']; ?>">
                                                 <button type="submit" class="btn btn-primary">
                                                     <i data-feather="eye"></i> View Details
                                                 </button>
