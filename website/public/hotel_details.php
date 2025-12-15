@@ -67,6 +67,7 @@ try {
         rel="stylesheet">
     <script async src="https://maps.googleapis.com/maps/api/js?key=<?= $_ENV['GOOGLE_MAPS_API_KEY'] ?>&loading=async&libraries=maps,marker"></script>
     <script src="js/comments.js" defer></script>
+    <script src="js/slide.js" defer></script>
 </head>
 
 <body>
@@ -95,11 +96,11 @@ try {
             </div>
         </section>
 
-<div class="booking-container">
-    <a href="/booking.php?hotel_id=<?= $hotel['id'] ?>" class="btn btn-outline book-now-button">
-        Book Now
-    </a>
-</div>
+	<div class="booking-container">
+    	    <a href="/booking.php?hotel_id=<?= $hotel['id'] ?>" class="btn btn-outline book-now-button">
+        	Book Now
+    	    </a>
+	</div>
 
         <div class="hotel-description">
 	    <?= $converter->convert($hotel['aprasymas'])->getContent() ?>
@@ -123,7 +124,6 @@ try {
 
                 <div id="comments-wrapper">
                     <div id="comment-container">
-                        <!-- Comments will be rendered here -->
                     </div>
 
                     <div id="comment-management">
@@ -157,45 +157,6 @@ try {
         feather.replace();
     </script>
 
-    <script>
-        // Slider functionality (same as before)
-        const slides = document.querySelectorAll('.slide');
-        let currentSlide = 0;
 
-        document.querySelector('.next').addEventListener('click', () => {
-            slides[currentSlide].classList.remove('active');
-            currentSlide = (currentSlide + 1) % slides.length;
-            slides[currentSlide].classList.add('active');
-        });
-
-        document.querySelector('.prev').addEventListener('click', () => {
-            slides[currentSlide].classList.remove('active');
-            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-            slides[currentSlide].classList.add('active');
-        });
-
-        // --- Image modal (click to expand) ---
-        const modal = document.getElementById('imageModal');
-        const modalImg = document.getElementById('modalImg');
-        const closeBtn = document.querySelector('.close');
-
-        // Open modal when clicking an image
-        document.querySelectorAll('.slider-image').forEach(img => {
-            img.addEventListener('click', () => {
-                modal.style.display = 'block';
-                modalImg.src = img.src;
-            });
-        });
-
-        // Close modal when clicking the ×
-        closeBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-
-        // Optional: close when clicking outside the image
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) modal.style.display = 'none';
-        });
-    </script>
 </body>
 </html>

@@ -3,13 +3,10 @@ require_once __DIR__ . '/../src/database/database.php';
 session_start();
 
 // Check if user is logged in
-
 if(!isset($_SESSION['user_id'])) {
     header('Location: login.php?error=not_logged_in');
     exit();
 }
-
-
 
 $db = Database::getInstance();
 $userId = $_SESSION['user_id'];
