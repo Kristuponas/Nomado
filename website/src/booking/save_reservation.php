@@ -6,7 +6,8 @@ $check_out = $_POST['to_date']   . ' 11:00:00';
 $hotel_id = $_GET['hotel_id'];
 
 if (strtotime($check_out) <= strtotime($check_in)) {
-    die('Invalid date range');
+    header("Location: /booking.php?hotel_id=$hotel_id");
+    exit();
 }
 
 $db = Database::getInstance();
@@ -22,3 +23,4 @@ $data = [
 $db->insert('rezervacija', $data);
 
 header("Location: /hotel_details.php?hotel_id=$hotel_id");
+exit();

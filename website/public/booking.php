@@ -1,8 +1,8 @@
 <?php
 session_start();
-/* if (!empty($_SESSION['user_id'], $_GET['hotel_id'])) { */
-/*     header('Location: /login.php'); */
-/* } */
+if (!empty($_SESSION['user_id']) && !empty($_GET['hotel_id'])) {
+    header('Location: /login.php');
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     switch ($_POST['action']) {
