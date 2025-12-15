@@ -49,6 +49,7 @@ $google2fa = new Google2FA();
 // Jei vartotojas turi 2FA įjungtą
 if (!empty($row['twofa_secret'])) {
     $_SESSION['2fa_user_id'] = $row['id'];
+    $_SESSION['user_id'] = $row['id'];
     $_SESSION['ulevel'] = $row['tipas'];
     unset($_SESSION['user_id_temp']); // Laikinas vartotojas nebebus reikalingas
     header("Location: /confirm2fa.php");

@@ -158,8 +158,8 @@ $favoriteHotels = $stmt->fetchAll();
                                     <span class="price-period">/ night</span>
                                 </div>
                                 <div class="favorite-actions">
-                                    <form action="Hotel_Details.php" method="GET">
-                                        <input type="hidden" name="id" value="<?php echo $hotel['id']; ?>">
+                                    <form action="hotel_details.php" method="GET">
+                                        <input type="hidden" name="hotel_id" value="<?php echo $hotel['id']; ?>">
                                         <button type="submit" class="btn btn-primary">
                                             <i data-feather="eye"></i>
                                             View Details

@@ -55,10 +55,7 @@ $seasonalDeals = $db->select('viesbutis', ['sezonas' => getSeasonId($currSeason)
 
 // ----- Recommended Hotels: based on previously viewed tags -----
 session_start();
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
+
 $viewedHotels = $_SESSION['viewed_hotels'] ?? []; // e.g., [1,3]
 $recommendedHotels = [];
 

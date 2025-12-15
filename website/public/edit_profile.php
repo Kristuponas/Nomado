@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ?>
 <!DOCTYPE html>
 <html>
+
 <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -101,9 +102,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 Edit
             </button>
         </div>
-    </div>
-    <div class="TFA">
-        <button onclick="window.location.href='enable_2fa.php'">Enable Two-Factor Authentication</button>
     </div>
 
     <!-- MODAL -->
