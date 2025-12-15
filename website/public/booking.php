@@ -1,11 +1,16 @@
 <?php
 session_start();
-if (!empty($_SESSION['user_id'])) {
-    header('Location: /');
+/* if (!empty($_SESSION['user_id'], $_GET['hotel_id'])) { */
+/*     header('Location: /login.php'); */
+/* } */
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    switch ($_POST['action']) {
+        case 'save':
+            require_once __DIR__ . '/../src/booking/save_reservation.php';
+            break;
+    }
 }
-
-echo var_dump($_SESSION['user_id']);
-
 ?>
 
 <!DOCTYPE html>
@@ -27,47 +32,45 @@ echo var_dump($_SESSION['user_id']);
 </head>
 <body>
 
-<?php include __DIR__ . '/../templates/navbar.php'; ?>
+    <?php include __DIR__ . '/../templates/navbar.php'; ?>
 
-<main class="form-container">
-    <h2>New Reservation</h2>
+    <main class="form-container">
+        <h2>New Reservation</h2>
 
-    <form action="save_reservation.php" method="POST" class="db-form">
+        <form action="" method="POST" class="db-form">
+	<input type="hidden" name="action" value="save"></input>
+        <div class="date-range">
 
-        <!-- Pradžios data -->
-        <div class="form-group">
-            <label for="pradzios_data">Start Date & Time</label>
-            <input type="datetime-local" id="pradzios_data" name="pradzios_data" required>
+        <!-- From -->
+            <div class="form-group">
+                <label for="from_date">Check-in</label>
+                <input type="date"
+                       id="from_date"
+                       name="from_date"
+                       min="<?= date('Y-m-d') ?>"
+                       required>
+            </div>
+
+        <!-- To -->
+            <div class="form-group">
+                <label for="to_date">Check-out</label>
+                <input type="date"
+                       id="to_date"
+                       name="to_date"
+                       required>
+            </div>
+
         </div>
 
-        <!-- Pabaigos data -->
-        <div class="form-group">
-            <label for="pabaigos_data">End Date & Time</label>
-            <input type="datetime-local" id="pabaigos_data" name="pabaigos_data" required>
-        </div>
-
-        <!-- FK: Vartotojas -->
-        <div class="form-group">
-            <label for="fk_Vartotojas">User ID</label>
-            <input type="number" id="fk_Vartotojas" name="fk_Vartotojas" required>
-        </div>
-
-        <!-- FK: Viesbutis -->
-        <div class="form-group">
-            <label for="fk_Viesbutis">Hotel ID</label>
-            <input type="number" id="fk_Viesbutis" name="fk_Viesbutis" required>
-        </div>
-
-        <!-- Submit -->
         <div class="form-actions">
-            <button type="submit">Save</button>
-            <button type="reset">Clear</button>
+            <button type="submit">Book Now</button>
         </div>
 
     </form>
-</main>
 
-<?php include __DIR__ . '/../templates/footer.php'; ?>
+    </main>
+
+    <?php include __DIR__ . '/../templates/footer.php'; ?>
 
 </body>
 </html>
