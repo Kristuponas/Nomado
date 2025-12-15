@@ -51,16 +51,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
+<head>
+    <link rel="stylesheet" href="css/TFA.css">
+</head>
 <h2>Įjunkite 2FA</h2>
 <p>Nuskanuokite QR kodą ir įveskite kodą iš programėlės:</p>
 
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=<?= urlencode($qrCodeUrl) ?>">
+<img class="QR" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=<?= urlencode($qrCodeUrl) ?>">
 
-<form method="POST">
-    <?php if ($error): ?>
-        <p style="color:red"><?= $error ?></p>
-    <?php endif; ?>
-    <input type="text" name="code" pattern="\d{6}" maxlength="6" required>
-    <button type="submit">Patvirtinti</button>
-</form>
+<div class="input">
+    <form method="POST">
+        <?php if ($error): ?>
+            <p style="color:red"><?= $error ?></p>
+            <?php endif; ?>
+            <input class="input-box" type="text" name="code" pattern="\d{6}" maxlength="6" required>
+            <button class="input-button" type="submit">Patvirtinti</button>
+    </form>
+</div>

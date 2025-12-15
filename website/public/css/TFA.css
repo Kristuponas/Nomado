@@ -1,0 +1,40 @@
+.box{
+    margin-top:5%
+}
+h2, p{
+    text-align: center;
+    font-family: 'Open Sans', sans-serif;
+}
+.QR{
+    display: flex;
+    margin: 0 auto;
+    width: 250px;
+    height: auto;
+}
+.input{
+    margin-top: 1%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.input-box{
+    background: transparent;
+    border: 1px solid #0d10b1;
+    border-radius: 5px;
+    padding-left: 10px;
+    height: 35px;
+    width: 60%;
+    font-size: 25px;
+    
+}
+.input-button{
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    border: 1px solid #336fd0;
+    border-radius: 5px;
+    height:35px;
+    font-size: 25px;
+}
+

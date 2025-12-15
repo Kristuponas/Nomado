@@ -28,11 +28,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+<head>
+    <link rel="stylesheet" href="css/TFA.css">
+</head>
+<div class="box">
 
-<h2>Įveskite Google Authenticator kodą</h2>
-<p>Jei neturite Google Authenticator programėlės, <a href="enable_2fa.php">nuskanuokite QR kodą čia</a></p>
-<form method="POST">
-    <?php if ($error) echo "<p style='color:red;'>$error</p>"; ?>
-    <input type="text" name="code" pattern="\d{6}" maxlength="6" required>
-    <button type="submit">Patvirtinti</button>
-</form>
+    <h2>Įveskite Google Authenticator kodą</h2>
+    <p>Jei neturite Google Authenticator programėlės, <a href="enable_2fa.php">nuskanuokite QR kodą čia</a></p>
+    <div class="input">
+        <form method="POST">
+            <?php if ($error) echo "<p style='color:red;'>$error</p>"; ?>
+            <input class="input-box" type="text" name="code" pattern="\d{6}" maxlength="6" required>
+            <button class="input-button" type="submit">Patvirtinti</button>
+        </form>
+    </div>
+</div>
